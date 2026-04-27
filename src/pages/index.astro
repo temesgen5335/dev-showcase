@@ -1,0 +1,37 @@
+---
+import Base from "@/layouts/Base.astro";
+import Hero from "@/components/Hero.astro";
+import Services from "@/components/Services.astro";
+import ProjectCard from "@/components/ProjectCard.astro";
+import ContactCTA from "@/components/ContactCTA.astro";
+import { getCollection } from "astro:content";
+
+const featured = (await getCollection("projects", ({ data }) => data.featured))
+  .sort((a, b) => a.data.order - b.data.order);
+---
+<Base>
+  <Hero />
+
+  <section style="padding-block: 2.5rem 1rem;">
+    <div style="display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 1.3rem;">
+      <h2 style="font-size: 0.95rem; margin: 0; color: var(--color-muted);">// featured work</h2>
+      <a href="/projects" class="mono" style="font-size: 0.78rem; color: var(--color-muted);">all projects →</a>
+    </div>
+    <div style="display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr));">
+      {featured.map((p) => (
+        <ProjectCard
+          title={p.data.title}
+          summary={p.data.summary}
+          tags={p.data.tags}
+          href={`/projects/${p.id}`}
+          cover={p.data.cover}
+          liveUrl={p.data.liveUrl}
+          githubUrl={p.data.githubUrl}
+        />
+      ))}
+    </div>
+  </section>
+
+  <Services />
+  <ContactCTA />
+</Base>

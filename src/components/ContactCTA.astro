@@ -1,0 +1,14 @@
+---
+import { site } from "@/data/site";
+---
+<section class="card" style="padding: 2rem 2rem; margin-top: 3rem;">
+  <h2 style="margin: 0 0 0.5rem; font-size: 1.4rem;">Let's build something.</h2>
+  <p style="margin: 0 0 1.2rem; color: var(--color-text); max-width: 38rem; line-height: 1.55;">
+    Open to senior AI engineering roles and freelance engagements — RAG systems, AI agents, production ML, and full-stack.
+  </p>
+  <div style="display: flex; flex-wrap: wrap; gap: 0.5rem;">
+    <a class="btn btn-primary" href={`mailto:${site.email}`}>email {site.email}</a>
+    <a class="btn" href="/contact">contact form</a>
+    <a class="btn" href={site.cvPath} download>download cv</a>
+  </div>
+</section>

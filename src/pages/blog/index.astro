@@ -1,0 +1,40 @@
+---
+import Base from "@/layouts/Base.astro";
+import { getCollection } from "astro:content";
+
+const posts = (await getCollection("posts", ({ data }) => !data.draft))
+  .sort((a, b) => b.data.publishDate.getTime() - a.data.publishDate.getTime());
+---
+<Base title="Blog" description="Notes on AI systems and engineering craft.">
+  <header style="margin-bottom: 2rem;">
+    <div class="mono" style="color: var(--color-muted); font-size: 0.78rem; margin-bottom: 0.6rem;">// blog</div>
+    <h1 style="margin: 0 0 0.6rem; font-size: clamp(1.8rem, 4vw, 2.6rem);">Notes</h1>
+    <p style="margin: 0; max-width: 42rem; color: var(--color-text); line-height: 1.55;">
+      Short-form writing on AI systems, RAG pipelines, and the engineering craft that goes into them.
+    </p>
+  </header>
+
+  {posts.length === 0 ? (
+    <div class="card" style="padding: 2rem 2rem; text-align: center; color: var(--color-muted);">
+      First post is on the way.
+    </div>
+  ) : (
+    <ol style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 0.8rem;">
+      {posts.map((p) => (
+        <li>
+          <a class="card" href={`/blog/${p.id}`} style="display: block; padding: 1rem 1.2rem;">
+            <div style="display: flex; justify-content: space-between; gap: 0.6rem; flex-wrap: wrap;">
+              <div class="mono" style="color: var(--color-text-strong); font-size: 0.92rem;">{p.data.title}</div>
+              <div class="mono" style="color: var(--color-muted); font-size: 0.78rem;">
+                {p.data.publishDate.toISOString().slice(0, 10)}
+              </div>
+            </div>
+            <p style="margin: 0.4rem 0 0; color: var(--color-text); font-size: 0.88rem; line-height: 1.55;">
+              {p.data.excerpt}
+            </p>
+          </a>
+        </li>
+      ))}
+    </ol>
+  )}
+</Base>

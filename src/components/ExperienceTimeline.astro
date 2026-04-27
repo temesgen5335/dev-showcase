@@ -1,0 +1,41 @@
+---
+import { getCollection } from "astro:content";
+
+const entries = (await getCollection("experience")).sort((a, b) => a.data.order - b.data.order);
+
+function highlight(text: string): string {
+  return text.replace(
+    /(\d+(?:\.\d+)?%|\d+x|\d+\+?)/g,
+    '<strong style="color: var(--color-text-strong);">$1</strong>',
+  );
+}
+---
+<ol style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 1rem;">
+  {entries.map((entry) => (
+    <li class="card" style="padding: 1.25rem 1.4rem;">
+      <div
+        style="display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 0.5rem; margin-bottom: 0.4rem;"
+      >
+        <div>
+          <div style="font-family: var(--font-mono); font-size: 0.95rem; color: var(--color-text-strong);">
+            {entry.data.role} <span style="color: var(--color-muted);">·</span> {entry.data.company}
+          </div>
+          <div class="mono" style="color: var(--color-muted); font-size: 0.78rem; margin-top: 0.2rem;">
+            {entry.data.location}
+          </div>
+        </div>
+        <div class="mono" style="color: var(--color-muted); font-size: 0.78rem; white-space: nowrap;">
+          {entry.data.startDate} — {entry.data.endDate}
+        </div>
+      </div>
+      <ul style="padding-left: 1.1rem; margin: 0.6rem 0 0.8rem; color: var(--color-text); line-height: 1.55; font-size: 0.92rem;">
+        {entry.data.bullets.map((b) => <li set:html={highlight(b)} />)}
+      </ul>
+      {entry.data.stack.length > 0 && (
+        <div style="display: flex; flex-wrap: wrap; gap: 0.35rem;">
+          {entry.data.stack.map((s) => <span class="tag">{s}</span>)}
+        </div>
+      )}
+    </li>
+  ))}
+</ol>

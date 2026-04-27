@@ -1,0 +1,15 @@
+---
+import { skillGroups } from "@/data/skills";
+---
+<div style="display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));">
+  {skillGroups.map((g) => (
+    <div class="card" style="padding: 1rem 1.2rem;">
+      <h3 style="margin: 0 0 0.6rem; font-size: 0.85rem; color: var(--color-muted);">
+        // {g.group.toLowerCase()}
+      </h3>
+      <div style="display: flex; flex-wrap: wrap; gap: 0.35rem;">
+        {g.items.map((item) => <span class="tag">{item}</span>)}
+      </div>
+    </div>
+  ))}
+</div>

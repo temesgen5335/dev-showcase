@@ -1,0 +1,32 @@
+---
+interface Props {
+  title: string;
+  summary: string;
+  tags: string[];
+  href: string;
+  cover?: string;
+  liveUrl?: string;
+  githubUrl?: string;
+}
+const { title, summary, tags, href, cover, liveUrl, githubUrl } = Astro.props;
+---
+<a class="card" href={href} style="display: block; padding: 1.1rem 1.25rem; text-decoration: none; color: inherit;">
+  {cover && (
+    <div style="aspect-ratio: 16/9; border-radius: 0.4rem; overflow: hidden; margin-bottom: 0.9rem; border: 1px solid var(--color-border); background: var(--color-bg);">
+      <img src={cover} alt={title} style="width: 100%; height: 100%; object-fit: cover; display: block;" loading="lazy" />
+    </div>
+  )}
+  <div style="display: flex; justify-content: space-between; align-items: baseline; gap: 0.5rem; margin-bottom: 0.4rem;">
+    <h3 style="margin: 0; font-size: 1rem;">{title}</h3>
+    <div class="mono" style="font-size: 0.7rem; color: var(--color-muted); display: flex; gap: 0.5rem;">
+      {liveUrl && <span>live ↗</span>}
+      {githubUrl && <span>repo ↗</span>}
+    </div>
+  </div>
+  <p style="margin: 0 0 0.8rem; color: var(--color-text); font-size: 0.88rem; line-height: 1.55;">
+    {summary}
+  </p>
+  <div style="display: flex; flex-wrap: wrap; gap: 0.35rem;">
+    {tags.slice(0, 4).map((t) => <span class="tag">{t}</span>)}
+  </div>
+</a>

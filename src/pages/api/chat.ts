@@ -1,0 +1,52 @@
+import type { APIRoute } from "astro";
+import { z } from "zod";
+import { chatStream } from "@/lib/llm";
+import { buildSystemPrompt } from "@/lib/context";
+
+export const prerender = false;
+
+const MessageSchema = z.object({
+  role: z.enum(["user", "assistant"]),
+  content: z.string().min(1).max(4000),
+});
+
+const BodySchema = z.object({
+  messages: z.array(MessageSchema).min(1).max(20),
+});
+
+export const POST: APIRoute = async ({ request }) => {
+  let json: unknown;
+  try {
+    json = await request.json();
+  } catch {
+    return new Response("Invalid JSON", { status: 400 });
+  }
+  const parsed = BodySchema.safeParse(json);
+  if (!parsed.success) {
+    return new Response(JSON.stringify(parsed.error.flatten()), { status: 400 });
+  }
+
+  try {
+    const { result, provider, model } = await chatStream({
+      system: buildSystemPrompt(),
+      messages: parsed.data.messages,
+    });
+    const response = result.toTextStreamResponse();
+    response.headers.set("x-llm-provider", provider);
+    response.headers.set("x-llm-model", model);
+    return response;
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : "Chat failed";
+    return new Response(msg, { status: 500 });
+  }
+};
+
+export const GET: APIRoute = async () => {
+  return new Response(
+    JSON.stringify({
+      ok: true,
+      hint: "POST { messages: [{role, content}] } to chat.",
+    }),
+    { headers: { "content-type": "application/json" } },
+  );
+};

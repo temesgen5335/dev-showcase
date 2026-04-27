@@ -1,0 +1,21 @@
+---
+import Base from "@/layouts/Base.astro";
+import ExperienceTimeline from "@/components/ExperienceTimeline.astro";
+import ContactCTA from "@/components/ContactCTA.astro";
+import { site } from "@/data/site";
+---
+<Base title="Experience" description={`Work history and impact for ${site.name}.`}>
+  <header style="margin-bottom: 2rem;">
+    <div class="mono" style="color: var(--color-muted); font-size: 0.78rem; margin-bottom: 0.6rem;">// experience</div>
+    <h1 style="margin: 0 0 0.6rem; font-size: clamp(1.8rem, 4vw, 2.6rem);">Work history</h1>
+    <p style="margin: 0; max-width: 42rem; color: var(--color-text); line-height: 1.55;">
+      Four years building AI systems and full-stack platforms — from Ethiopia's innovation ministry
+      to a San Francisco fintech. Impact numbers are in bold.
+    </p>
+    <div style="margin-top: 1rem; display: flex; gap: 0.5rem; flex-wrap: wrap;">
+      <a class="btn btn-primary" href={site.cvPath} download>download full cv</a>
+    </div>
+  </header>
+  <ExperienceTimeline />
+  <ContactCTA />
+</Base>

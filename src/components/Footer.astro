@@ -1,0 +1,21 @@
+---
+import { site, socials } from "@/data/site";
+const year = new Date().getFullYear();
+---
+<footer style="border-top: 1px solid var(--color-border); margin-top: 4rem;">
+  <div
+    class="container-x"
+    style="padding-block: 2rem; display: flex; flex-wrap: wrap; gap: 1rem; align-items: center; justify-content: space-between;"
+  >
+    <div class="mono" style="color: var(--color-muted); font-size: 0.8rem;">
+      © {year} {site.name} · built with Astro
+    </div>
+    <div class="mono" style="display: flex; gap: 1rem; font-size: 0.8rem;">
+      {socials.map((s) => (
+        <a href={s.href} target="_blank" rel="noopener noreferrer" style="color: var(--color-muted);">
+          {s.label}
+        </a>
+      ))}
+    </div>
+  </div>
+</footer>

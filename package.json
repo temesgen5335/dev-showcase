@@ -1,0 +1,37 @@
+{
+  "name": "claude-portfolio",
+  "type": "module",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "astro dev",
+    "start": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro",
+    "check": "astro check"
+  },
+  "dependencies": {
+    "@ai-sdk/anthropic": "^3.0.71",
+    "@ai-sdk/google": "^3.0.64",
+    "@ai-sdk/groq": "^3.0.35",
+    "@ai-sdk/openai": "^3.0.53",
+    "@astrojs/check": "^0.9.4",
+    "@astrojs/mdx": "^4.2.5",
+    "@astrojs/react": "^4.3.0",
+    "@astrojs/vercel": "^8.2.4",
+    "@tailwindcss/vite": "^4.1.13",
+    "@types/react": "^19.0.10",
+    "@types/react-dom": "^19.0.4",
+    "ai": "^6.0.168",
+    "astro": "^5.14.1",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "tailwindcss": "^4.1.13",
+    "typescript": "^5.7.3",
+    "zod": "^3.25.76"
+  },
+  "devDependencies": {
+    "@types/node": "^25.6.0"
+  }
+}

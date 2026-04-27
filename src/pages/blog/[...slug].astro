@@ -1,0 +1,26 @@
+---
+import Base from "@/layouts/Base.astro";
+import { getCollection, render } from "astro:content";
+
+export const prerender = true;
+
+export async function getStaticPaths() {
+  const posts = await getCollection("posts", ({ data }) => !data.draft);
+  return posts.map((entry) => ({ params: { slug: entry.id }, props: { entry } }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+---
+<Base title={entry.data.title} description={entry.data.excerpt}>
+  <a href="/blog" class="mono" style="font-size: 0.78rem; color: var(--color-muted);">← all posts</a>
+  <header style="margin: 1.25rem 0 2rem;">
+    <h1 style="margin: 0 0 0.5rem; font-size: clamp(1.7rem, 4vw, 2.4rem);">{entry.data.title}</h1>
+    <div class="mono" style="color: var(--color-muted); font-size: 0.8rem;">
+      {entry.data.publishDate.toISOString().slice(0, 10)}
+    </div>
+  </header>
+  <article style="max-width: 42rem; color: var(--color-text); line-height: 1.75;">
+    <Content />
+  </article>
+</Base>

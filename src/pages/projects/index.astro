@@ -1,0 +1,30 @@
+---
+import Base from "@/layouts/Base.astro";
+import ProjectCard from "@/components/ProjectCard.astro";
+import { getCollection } from "astro:content";
+
+const projects = (await getCollection("projects")).sort((a, b) => a.data.order - b.data.order);
+---
+<Base title="Projects" description="Selected AI and full-stack projects.">
+  <header style="margin-bottom: 2rem;">
+    <div class="mono" style="color: var(--color-muted); font-size: 0.78rem; margin-bottom: 0.6rem;">// projects</div>
+    <h1 style="margin: 0 0 0.6rem; font-size: clamp(1.8rem, 4vw, 2.6rem);">Selected work</h1>
+    <p style="margin: 0; max-width: 42rem; color: var(--color-text); line-height: 1.55;">
+      AI systems, RAG pipelines, full-stack platforms, and web3 experiments. Click into any project
+      for the full case study and gallery.
+    </p>
+  </header>
+  <div style="display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr));">
+    {projects.map((p) => (
+      <ProjectCard
+        title={p.data.title}
+        summary={p.data.summary}
+        tags={p.data.tags}
+        href={`/projects/${p.id}`}
+        cover={p.data.cover}
+        liveUrl={p.data.liveUrl}
+        githubUrl={p.data.githubUrl}
+      />
+    ))}
+  </div>
+</Base>

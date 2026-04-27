@@ -1,0 +1,395 @@
+---
+import { site } from "@/data/site";
+---
+<section
+  data-hero
+  style="position: relative; padding-block: 3rem 2.5rem; isolation: isolate;"
+>
+  <canvas
+    data-hero-stars
+    aria-hidden="true"
+    style="position: absolute; inset: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; opacity: 0; transition: opacity 600ms ease;"
+  ></canvas>
+
+  <svg
+    data-hero-grid
+    aria-hidden="true"
+    viewBox="0 0 1000 600"
+    preserveAspectRatio="none"
+    style="position: absolute; left: 0; right: 0; bottom: 0; width: 100%; height: 30%; z-index: 0; pointer-events: none; opacity: 0; transition: opacity 800ms ease;"
+  >
+    <defs>
+      <linearGradient id="hero-grid-fade" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#7dd3fc" stop-opacity="0" />
+        <stop offset="100%" stop-color="#7dd3fc" stop-opacity="0.8" />
+      </linearGradient>
+    </defs>
+    <g stroke="url(#hero-grid-fade)" stroke-width="1" fill="none" opacity="0.55">
+      <line x1="500" y1="0" x2="-200" y2="600" />
+      <line x1="500" y1="0" x2="50" y2="600" />
+      <line x1="500" y1="0" x2="200" y2="600" />
+      <line x1="500" y1="0" x2="350" y2="600" />
+      <line x1="500" y1="0" x2="500" y2="600" />
+      <line x1="500" y1="0" x2="650" y2="600" />
+      <line x1="500" y1="0" x2="800" y2="600" />
+      <line x1="500" y1="0" x2="950" y2="600" />
+      <line x1="500" y1="0" x2="1200" y2="600" />
+    </g>
+    <g data-hero-grid-lines stroke="#7dd3fc" stroke-width="1" fill="none">
+      <line x1="0" y1="80"  x2="1000" y2="80"  opacity="0.04" />
+      <line x1="0" y1="160" x2="1000" y2="160" opacity="0.06" />
+      <line x1="0" y1="260" x2="1000" y2="260" opacity="0.08" />
+      <line x1="0" y1="380" x2="1000" y2="380" opacity="0.11" />
+      <line x1="0" y1="520" x2="1000" y2="520" opacity="0.15" />
+    </g>
+  </svg>
+
+  <div
+    data-hero-cursor
+    aria-hidden="true"
+    style="position: absolute; top: 0; left: 0; width: 600px; height: 600px; margin: -300px 0 0 -300px; border-radius: 50%; background: radial-gradient(circle, rgba(125, 211, 252, 0.18), transparent 60%); z-index: 1; pointer-events: none; opacity: 0; transition: opacity 400ms ease; will-change: transform;"
+  ></div>
+
+  <div style="position: relative; z-index: 2;">
+    <div
+      data-hero-chip
+      class="mono"
+      style="display: inline-flex; align-items: center; gap: 0.5rem; color: var(--color-muted); font-size: 0.78rem; margin-bottom: 0.9rem; transition: opacity 120ms ease;"
+    >
+      <span>~ {site.location.toLowerCase()} ·</span>
+      <span
+        data-hero-dot
+        style="display: inline-block; width: 0.42rem; height: 0.42rem; border-radius: 50%; background: var(--color-accent); box-shadow: 0 0 0 0 rgba(125, 211, 252, 0.55);"
+      ></span>
+      <span>available for senior ai roles + freelance</span>
+    </div>
+
+    <h1
+      data-hero-name
+      style="font-size: clamp(2rem, 5vw, 3.4rem); line-height: 1.05; margin: 0 0 1rem;"
+    >
+      {site.name}.
+    </h1>
+
+    <p
+      data-hero-role
+      class="mono"
+      style="font-size: clamp(0.95rem, 2vw, 1.1rem); color: var(--color-text); margin: 0 0 0.5rem; min-height: 1.5em;"
+    >
+      <span data-hero-role-text>{site.title} <span style="color: var(--color-muted);">·</span> {site.subtitle}</span><span data-hero-caret aria-hidden="true" style="display: none; color: var(--color-accent); margin-left: 0.15ch;">▍</span>
+    </p>
+
+    <p
+      data-hero-positioning
+      style="max-width: 44rem; color: var(--color-text); font-size: 1rem; line-height: 1.6; margin: 1.25rem 0 2rem;"
+    >
+      Building agentic AI systems, RAG pipelines, and production-ready full-stack apps.
+      Currently the Founding AI Engineer at <strong style="color: var(--color-text-strong);">Chronos</strong>.
+      Previously at 10 Academy, Bluespark, and Ethiopia's Ministry of Innovation and Technology.
+    </p>
+
+    <div data-hero-ctas style="display: flex; gap: 0.6rem; flex-wrap: wrap;">
+      <a href="/experience" class="btn btn-primary">view experience →</a>
+      <a href={site.cvPath} class="btn" download>download cv</a>
+      <a href="/contact" class="btn">get in touch</a>
+    </div>
+
+    <div
+      data-hero-scroll
+      class="mono"
+      aria-hidden="true"
+      style="margin-top: 2.5rem; color: var(--color-muted); font-size: 0.72rem; display: inline-flex; align-items: center; gap: 0.4rem;"
+    >
+      <span data-hero-scroll-arrow style="display: inline-block;">↓</span>
+      <span>scroll</span>
+    </div>
+  </div>
+</section>
+
+<style>
+  /* JS-on baseline: hide reveal targets so the mount animation has somewhere to come from. */
+  [data-hero].js [data-hero-name],
+  [data-hero].js [data-hero-positioning] {
+    opacity: 0;
+  }
+  [data-hero].js [data-hero-name] {
+    filter: blur(6px);
+    transform: translateY(2px);
+    transition: opacity 300ms ease-out, filter 300ms ease-out, transform 300ms ease-out;
+  }
+  [data-hero].js [data-hero-positioning] {
+    transition: opacity 500ms ease 0ms;
+  }
+  [data-hero].js [data-hero-name].is-in {
+    opacity: 1;
+    filter: blur(0);
+    transform: none;
+  }
+  [data-hero].js [data-hero-positioning].is-in {
+    opacity: 1;
+  }
+  [data-hero].js [data-hero-caret] {
+    display: inline-block;
+    animation: hero-caret 1s steps(2, end) infinite;
+  }
+
+  /* Idle motion. */
+  [data-hero-dot] {
+    animation: hero-dot 2s ease-in-out infinite;
+  }
+  [data-hero-scroll-arrow] {
+    animation: hero-scroll 2s ease-in-out infinite;
+  }
+
+  @keyframes hero-dot {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(125, 211, 252, 0.55); opacity: 0.85; }
+    50%      { box-shadow: 0 0 0 6px rgba(125, 211, 252, 0); opacity: 1; }
+  }
+  @keyframes hero-caret {
+    0%, 100% { opacity: 1; }
+    50%      { opacity: 0; }
+  }
+  @keyframes hero-scroll {
+    0%, 100% { transform: translateY(0); opacity: 0.7; }
+    50%      { transform: translateY(3px); opacity: 1; }
+  }
+
+  /* Reduced motion: snap to static end-state, kill all loops. */
+  @media (prefers-reduced-motion: reduce) {
+    [data-hero] [data-hero-stars],
+    [data-hero] [data-hero-grid],
+    [data-hero] [data-hero-cursor] { display: none !important; }
+    [data-hero] [data-hero-dot],
+    [data-hero] [data-hero-scroll-arrow],
+    [data-hero] [data-hero-caret] { animation: none !important; }
+    [data-hero].js [data-hero-name],
+    [data-hero].js [data-hero-positioning] {
+      opacity: 1 !important;
+      filter: none !important;
+      transform: none !important;
+    }
+  }
+</style>
+
+<script>
+  // SSR-safe: this whole block is a client island; the section above already renders fully without it.
+  (() => {
+    const root = document.querySelector<HTMLElement>("[data-hero]");
+    if (!root) return;
+    root.classList.add("js");
+
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const coarse  = window.matchMedia("(pointer: coarse)").matches;
+
+    const name        = root.querySelector<HTMLElement>("[data-hero-name]");
+    const positioning = root.querySelector<HTMLElement>("[data-hero-positioning]");
+    const roleText    = root.querySelector<HTMLElement>("[data-hero-role-text]");
+    const caret       = root.querySelector<HTMLElement>("[data-hero-caret]");
+    const chip        = root.querySelector<HTMLElement>("[data-hero-chip]");
+    const stars       = root.querySelector<HTMLCanvasElement>("[data-hero-stars]");
+    const gridSvg     = root.querySelector<SVGElement>("[data-hero-grid]");
+    const cursor      = root.querySelector<HTMLElement>("[data-hero-cursor]");
+
+    // --- Reveal: name fade+blur-out, role types in, positioning fades in last.
+    requestAnimationFrame(() => name?.classList.add("is-in"));
+
+    if (!reduced && roleText && caret) {
+      const full = roleText.innerHTML;
+      roleText.textContent = "";
+      caret.style.display = "inline-block";
+      // Type the role line at 35ms/char. Single pass — no loop. HTML kept intact via a tiny tokenizer
+      // so the muted middot span survives the type-in.
+      const tokens = tokenizeHTML(full);
+      let i = 0;
+      const tick = () => {
+        if (i >= tokens.length) {
+          caret.style.display = "none";
+          return;
+        }
+        roleText.innerHTML = tokens.slice(0, ++i).join("");
+        setTimeout(tick, 35);
+      };
+      setTimeout(tick, 320); // slight delay so the name reveal lands first
+      // Positioning paragraph fades in after the type-in is reasonably underway.
+      setTimeout(() => positioning?.classList.add("is-in"), 700);
+    } else {
+      // Reduced motion (or no role/caret): show everything immediately.
+      positioning?.classList.add("is-in");
+    }
+
+    // --- Idle data-flicker on the location chip (1-frame opacity dip every 8–12s, randomized).
+    if (!reduced && chip) scheduleFlicker(chip);
+
+    // --- Bail before any RAF work when reduced motion is on.
+    if (reduced) return;
+
+    // Lazy-init the heavy stuff (canvas + RAF) after first paint.
+    const idle = (cb: () => void) =>
+      "requestIdleCallback" in window
+        ? (window as any).requestIdleCallback(cb, { timeout: 800 })
+        : setTimeout(cb, 200);
+
+    idle(() => {
+      if (stars)   initStarfield(stars, root);
+      if (gridSvg) (gridSvg as HTMLElement).style.opacity = "1";
+      if (cursor && !coarse) initCursor(cursor, root);
+    });
+
+    // ------- helpers -------
+
+    function tokenizeHTML(html: string): string[] {
+      // Split into character-level tokens but keep tag pairs atomic, so the inline
+      // <span style="color:..."> wrapping the middot doesn't get sliced mid-tag.
+      const out: string[] = [];
+      let i = 0;
+      while (i < html.length) {
+        if (html[i] === "<") {
+          const close = html.indexOf(">", i);
+          if (close === -1) { out.push(html.slice(i)); break; }
+          out.push(html.slice(i, close + 1));
+          i = close + 1;
+        } else {
+          out.push(html[i]);
+          i++;
+        }
+      }
+      return out;
+    }
+
+    function scheduleFlicker(el: HTMLElement) {
+      const next = 8000 + Math.random() * 4000;
+      setTimeout(() => {
+        el.style.opacity = "0.35";
+        setTimeout(() => { el.style.opacity = ""; scheduleFlicker(el); }, 60);
+      }, next);
+    }
+
+    function initStarfield(canvas: HTMLCanvasElement, host: HTMLElement) {
+      const ctx = canvas.getContext("2d", { alpha: true });
+      if (!ctx) return;
+
+      // Density: ~140 desktop / ~55 mobile. Texture, not confetti.
+      const isMobile = window.matchMedia("(max-width: 768px)").matches;
+      const COUNT = isMobile ? 55 : 140;
+      const stars = Array.from({ length: COUNT }, () => spawn());
+
+      let w = 0, h = 0, dpr = 1;
+      let tilt = { x: 0, y: 0 };
+
+      const resize = () => {
+        const rect = host.getBoundingClientRect();
+        dpr = Math.min(window.devicePixelRatio || 1, 2);
+        w = rect.width; h = rect.height;
+        canvas.width  = Math.max(1, Math.floor(w * dpr));
+        canvas.height = Math.max(1, Math.floor(h * dpr));
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        // Re-seed positions when geometry changes so density looks right.
+        stars.forEach(s => { s.x = Math.random() * w; s.y = Math.random() * h; });
+      };
+
+      function spawn() {
+        return {
+          x: 0, y: 0,
+          // drift well under 5px/s — values are px/frame at 60fps, so ~0.05 ≈ 3px/s
+          vx: (Math.random() - 0.5) * 0.06,
+          vy: (Math.random() - 0.5) * 0.06,
+          r: Math.random() < 0.85 ? 0.8 : 1.4,
+          a: 0.25 + Math.random() * 0.55,
+          phase: Math.random() * Math.PI * 2,
+          speed: 0.6 + Math.random() * 1.2,
+        };
+      }
+
+      resize();
+      const ro = new ResizeObserver(resize);
+      ro.observe(host);
+      canvas.style.opacity = "1";
+
+      let raf = 0;
+      let last = performance.now();
+
+      const loop = (t: number) => {
+        const dt = Math.min(48, t - last); last = t;
+        ctx.clearRect(0, 0, w, h);
+        // Parallax: shift entire field slightly with cursor — kept tiny (max 6° feel).
+        const px = tilt.x * 6;
+        const py = tilt.y * 6;
+        for (const s of stars) {
+          s.x += s.vx * (dt / 16);
+          s.y += s.vy * (dt / 16);
+          if (s.x < -2) s.x = w + 2; else if (s.x > w + 2) s.x = -2;
+          if (s.y < -2) s.y = h + 2; else if (s.y > h + 2) s.y = -2;
+          const twinkle = 0.5 + 0.5 * Math.sin((t / 1000) * s.speed + s.phase);
+          ctx.globalAlpha = s.a * (0.5 + 0.5 * twinkle);
+          ctx.fillStyle = "#e5e5e5";
+          ctx.beginPath();
+          ctx.arc(s.x + px, s.y + py, s.r, 0, Math.PI * 2);
+          ctx.fill();
+        }
+        ctx.globalAlpha = 1;
+        raf = requestAnimationFrame(loop);
+      };
+
+      const start = () => { last = performance.now(); raf = requestAnimationFrame(loop); };
+      const stop  = () => cancelAnimationFrame(raf);
+
+      // Cursor parallax (desktop only — coarse pointers skip).
+      if (!coarse) {
+        host.addEventListener("pointermove", (e) => {
+          const rect = host.getBoundingClientRect();
+          tilt.x = ((e.clientX - rect.left) / rect.width  - 0.5) * 2;
+          tilt.y = ((e.clientY - rect.top)  / rect.height - 0.5) * 2;
+        }, { passive: true });
+      }
+
+      // Pause when tab hidden — saves cycles, also matches the README's idle-motion rule.
+      document.addEventListener("visibilitychange", () => {
+        if (document.hidden) stop(); else start();
+      });
+
+      start();
+    }
+
+    function initCursor(el: HTMLElement, host: HTMLElement) {
+      let tx = 0, ty = 0, x = 0, y = 0;
+      let visible = false;
+      let hideTimer = 0;
+
+      const lerp = 0.08; // gentle follow — lower = more lag
+      let raf = 0;
+      const tick = () => {
+        x += (tx - x) * lerp;
+        y += (ty - y) * lerp;
+        el.style.transform = `translate(${x}px, ${y}px)`;
+        raf = requestAnimationFrame(tick);
+      };
+      raf = requestAnimationFrame(tick);
+
+      host.addEventListener("pointermove", (e) => {
+        const rect = host.getBoundingClientRect();
+        tx = e.clientX - rect.left;
+        ty = e.clientY - rect.top;
+        if (!visible) { el.style.opacity = "1"; visible = true; }
+        clearTimeout(hideTimer);
+        hideTimer = window.setTimeout(() => { el.style.opacity = "0"; visible = false; }, 400);
+      }, { passive: true });
+
+      host.addEventListener("pointerleave", () => {
+        clearTimeout(hideTimer);
+        el.style.opacity = "0"; visible = false;
+      });
+
+      document.addEventListener("visibilitychange", () => {
+        if (document.hidden) { cancelAnimationFrame(raf); }
+        else { raf = requestAnimationFrame(tick); }
+      });
+    }
+  })();
+</script>
+
+<!--
+  Tuning knobs (most likely to adjust):
+  1. Particle density — `COUNT` inside `initStarfield` (currently 140 / 55).
+  2. Type-in speed   — the `35` in `setTimeout(tick, 35)` near the role reveal.
+  3. Accent intensity — cursor highlight alpha (`rgba(125,211,252,0.18)` in [data-hero-cursor]) and grid line opacities in the `<svg>` above.
+-->

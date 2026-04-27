@@ -1,0 +1,14 @@
+---
+import { services } from "@/data/site";
+---
+<section style="padding-block: 3rem 1rem;">
+  <h2 style="font-size: 0.95rem; margin: 0 0 1.3rem; color: var(--color-muted);">// services</h2>
+  <div style="display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));">
+    {services.map((s) => (
+      <div class="card" style="padding: 1.1rem 1.25rem;">
+        <h3 style="margin: 0 0 0.45rem; font-size: 0.95rem;">{s.title}</h3>
+        <p style="margin: 0; color: var(--color-text); font-size: 0.85rem; line-height: 1.55;">{s.body}</p>
+      </div>
+    ))}
+  </div>
+</section>
