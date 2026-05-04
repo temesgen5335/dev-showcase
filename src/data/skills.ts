@@ -63,7 +63,7 @@ export const education = [
     school: "Addis Ababa University",
     degree: "BSc in Information Systems",
     location: "Addis Ababa, Ethiopia",
-    end: "July 2023",
+    end: "2023",
     href: "http://www.aau.edu.et/",
   },
   {

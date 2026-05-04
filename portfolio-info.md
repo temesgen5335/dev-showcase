@@ -32,7 +32,7 @@
 
 ## Professional Summary
 
-Ambitious AI Engineer with strong expertise in Generative AI, Machine Learning, Data Engineering, and Full-stack Software development. Proficient in Python, PyTorch, TensorFlow, Scikit-learn, and advanced AI tools such as LangChain, LlamaIndex, Hugging Face Transformers, and OpenAI APIs. Skilled in building agentic AI systems, Retrieval-Augmented Generation (RAG) pipelines, prompt engineering, and designing scalable data pipelines. Experienced in integrating AI into production-ready applications with real-world impact.
+Ambitious AI Engineer with strong expertise in Generative AI, Machine Learning, Data Engineering, and Full-stack Software development. Proficient in Python, PyTorch, TensorFlow, Scikit-learn, and advanced AI tools such as LangChain, LlamaIndex, Hugging Face Transformers, and OpenAI APIs. Skilled in building agentic AI systems, Retrieval-Augmented Generation (RAG) pipelines, prompt engineering, and designing scalable data pipelines. Experienced in integrating AI into production-ready AI applications with real-world impact.
 
 ## Taglines (for hero / OG)
 
@@ -90,7 +90,7 @@ I'm a full-stack developer and AI engineer with a passion for creating smart, sc
 ## Education
 
 ### BSc in Information Systems — Addis Ababa University
-**Addis Ababa, Ethiopia · Graduated July 2023**
+**Addis Ababa, Ethiopia · Graduated 2023**
 
 Relevant coursework: Fundamentals of Programming, Data Structures and Algorithms (DSA), Object-Oriented Programming (OOP), Software Development Life Cycle (SDLC), Database Management Systems (DBMS), Applied Mathematics, Statistics, Information Security, Artificial Intelligence (AI), Data Science and Analytics, Enterprise Resource Planning (ERP) Systems.
 
