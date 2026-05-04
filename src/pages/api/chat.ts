@@ -1,6 +1,10 @@
 import type { APIRoute } from "astro";
 import { z } from "zod";
-import { chatStream } from "@/lib/llm";
+import {
+  chatStream,
+  ProviderUnavailableError,
+  PROVIDER_UNAVAILABLE_MESSAGE,
+} from "@/lib/llm";
 import { buildSystemPrompt } from "@/lib/context";
 
 export const prerender = false;
@@ -27,17 +31,27 @@ export const POST: APIRoute = async ({ request }) => {
   }
 
   try {
-    const { result, provider, model } = await chatStream({
+    const { stream, provider, model } = await chatStream({
       system: buildSystemPrompt(),
       messages: parsed.data.messages,
     });
-    const response = result.toTextStreamResponse();
-    response.headers.set("x-llm-provider", provider);
-    response.headers.set("x-llm-model", model);
-    return response;
+    return new Response(stream, {
+      headers: {
+        "content-type": "text/plain; charset=utf-8",
+        "cache-control": "no-store",
+        "x-llm-provider": provider,
+        "x-llm-model": model,
+      },
+    });
   } catch (err) {
-    const msg = err instanceof Error ? err.message : "Chat failed";
-    return new Response(msg, { status: 500 });
+    if (err instanceof ProviderUnavailableError) {
+      return new Response(PROVIDER_UNAVAILABLE_MESSAGE, { status: 503 });
+    }
+    console.error("[api/chat]", err);
+    return new Response(
+      "Sorry, the assistant is having trouble right now. Please try again in a moment.",
+      { status: 502 },
+    );
   }
 };
 
