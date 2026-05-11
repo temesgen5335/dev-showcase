@@ -32,7 +32,7 @@
 
 ## Professional Summary
 
-Ambitious AI Engineer with strong expertise in Generative AI, Machine Learning, Data Engineering, and Full-stack Software development. Proficient in Python, PyTorch, TensorFlow, Scikit-learn, and advanced AI tools such as LangChain, LlamaIndex, Hugging Face Transformers, and OpenAI APIs. Skilled in building agentic AI systems, Retrieval-Augmented Generation (RAG) pipelines, prompt engineering, and designing scalable data pipelines. Experienced in integrating AI into production-ready AI applications with real-world impact.
+Ambitious AI Engineer with strong expertise in Generative AI, Machine Learning, Data Engineering, and Full-stack Software development. Proficient in Python, PyTorch, TensorFlow, Scikit-learn, and advanced AI tools such as LangChain, LlamaIndex, Hugging Face Transformers, and OpenAI APIs. Skilled in building agentic AI systems, Retrieval-Augmented Generation (RAG) pipelines, prompt engineering, and designing scalable data pipelines. Experienced in integrating AI into production-ready applications with real-world impact.
 
 ## Taglines (for hero / OG)
 
@@ -48,27 +48,8 @@ I'm a full-stack developer and AI engineer with a passion for creating smart, sc
 
 ## Experience
 
-### AI Engineer & Technical Tutor — 10 Academy
-**Remote · February 2026 – Present**
-
-- Tutoring forward-deployed engineers on agentic AI architectures, coding agents (Claude, Codex, Gemini), and LLM-powered automation across brownfield and greenfield projects.
-- Led trainee teams through weekly sprints on agentic systems, data engineering, and LLM fine-tuning — one team secured a top-10 spot on UC Berkeley's DataAgentBench.
-- Built a program-agnostic meeting automation platform (FastAPI, Next.js, Strapi, PostgreSQL) that extracts Drive recordings via Notion schedules, auto-publishes to YouTube, and tracks attendance.
-- Enhancing an NLP-powered data dashboard with multi-agent query generation, enabling non-technical users to retrieve and visualize data from Strapi and Weaviate via natural language chat.
-
-**Stack:** FastAPI, Next.js, Strapi, PostgreSQL, Weaviate, LangGraph, multi-agent AI.
-
-### Software Engineer — Safaricom
-**Addis Ababa, Ethiopia · June 2025 – February 2026**
-
-- Led frontend development and refactoring for the 'One Platform', a modular enterprise system with multiple independently deployed sub-applications, unified under a single platform architecture.
-- Refactored legacy, inconsistently maintained frontend codebases into a standardized design system (shadcn/ui) and shared framework, resulting in faster page loads, improved data fetching, clearer error handling, and significantly reduced production issues.
-- Accelerated feature delivery by adding and maintaining independently deployed modules with CI/CD pipelines, improving platform consistency and reducing recurring support and debugging cycles.
-
-**Stack:** React, TypeScript, shadcn/ui, TailwindCSS, CI/CD.
-
 ### Founding AI Engineer — Chronos
-**San Francisco, California (Remote, Concurrent) · June 2025 – December 2025**
+**San Francisco, California · June 2025 – Present**
 
 - Designed and built Chronos' AI financial advisor, integrating NLP and recommendation models for personalized finance insights.
 - Developed and deployed AI-driven investment strategies (crypto, stocks, and NFTs) to support automated wealth management.
@@ -109,7 +90,7 @@ I'm a full-stack developer and AI engineer with a passion for creating smart, sc
 ## Education
 
 ### BSc in Information Systems — Addis Ababa University
-**Addis Ababa, Ethiopia · Graduated 2023**
+**Addis Ababa, Ethiopia · Graduated July 2023**
 
 Relevant coursework: Fundamentals of Programming, Data Structures and Algorithms (DSA), Object-Oriented Programming (OOP), Software Development Life Cycle (SDLC), Database Management Systems (DBMS), Applied Mathematics, Statistics, Information Security, Artificial Intelligence (AI), Data Science and Analytics, Enterprise Resource Planning (ERP) Systems.
 
@@ -219,19 +200,6 @@ Marketplace empowering Ethiopian creative artists and craftsmen.
 ### 10. ELO — Effortless Order Foods (DApp)
 Decentralized food-ordering rewards: token pre-sale, staking, trading.
 - **Stack:** Solidity, Web3, DApp
-
-### 11. Legacy Code Cartographer
-Codebase intelligence system that maps legacy production environments using AI agents — generates architecture graphs, dependency maps, and onboarding guides to accelerate forward-deployed engineer ramp-up.
-- **Stack:** Python, AST parsing, multi-agent orchestration, LangGraph
-- **Context:** Tooling for forward-deployed engineering work (10 Academy / brownfield projects)
-
-### 12. Automation Auditor
-Deep LangGraph swarm orchestration for autonomous agent governance — monitors, audits, and enforces policies across multi-agent workflows to ensure safe and compliant AI automation at scale.
-- **Stack:** Python, LangGraph, multi-agent orchestration
-
-### 13. The Ledger
-Agentic event store and enterprise audit infrastructure — immutable memory and governance backbone for multi-agent AI systems, enabling full traceability of agent decisions and actions at production scale.
-- **Stack:** Python, event sourcing, multi-agent AI
 
 ---
 

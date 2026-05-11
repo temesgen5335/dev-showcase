@@ -1,6 +1,6 @@
-# claude-portfolio
+# temesgen-dev
 
-Personal portfolio for **Temesgen Gebreabzgi** — AI Software Engineer.
+Personal portfolio for **Temesgen Gebreabzgi** — Senior AI Software Engineer.
 
 Built with Astro 5 + TypeScript + Tailwind v4. Content lives in typed MDX content
 collections so everything is queryable at build time. A single `portfolio-info.md`

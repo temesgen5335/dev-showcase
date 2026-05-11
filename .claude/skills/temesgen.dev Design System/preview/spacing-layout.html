@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=700">
+<title>Spacing — Layout</title>
+<link rel="stylesheet" href="../colors_and_type.css">
+<style>
+html,body{margin:0;background:var(--color-bg);color:var(--fg-2);font-family:var(--font-mono);}
+.card{padding:18px 24px;}
+.spec{font-size:10px;color:var(--fg-3);margin-bottom:10px;}
+.frame{position:relative;height:200px;border:1px dashed var(--color-border);border-radius:6px;overflow:hidden;}
+.cont{position:absolute;left:50%;top:0;bottom:0;width:520px;transform:translateX(-50%);border-left:1px dashed var(--color-accent);border-right:1px dashed var(--color-accent);opacity:.45;}
+.inner{position:absolute;left:50%;top:0;bottom:0;width:480px;transform:translateX(-50%);background:var(--color-surface);}
+.cap{position:absolute;left:50%;bottom:8px;transform:translateX(-50%);font-size:10px;color:var(--fg-3);}
+.t1{position:absolute;left:14px;top:10px;font-size:10px;color:var(--fg-3);}
+.t2{position:absolute;left:50%;top:10px;transform:translateX(-50%);font-size:10px;color:var(--color-accent);}
+</style></head>
+<body class="tg-html"><div class="card">
+  <div class="spec">// container · max-width 64rem (1024px) · inline padding 1.5rem (24px) · single column</div>
+  <div class="frame">
+    <div class="t1">page bg #0a0a0a</div>
+    <div class="cont"></div>
+    <div class="inner"></div>
+    <div class="t2">— content —</div>
+    <div class="cap">64rem &nbsp;·&nbsp; padding 1.5rem each side</div>
+  </div>
+</div></body></html>

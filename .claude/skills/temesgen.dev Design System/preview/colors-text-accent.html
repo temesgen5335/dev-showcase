@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=700">
+<title>Colors — Text & Accent</title>
+<link rel="stylesheet" href="../colors_and_type.css">
+<style>
+html,body{margin:0;background:var(--color-bg);color:var(--fg-2);font-family:var(--font-sans);}
+.card{padding:20px 24px;display:grid;grid-template-columns:repeat(4,1fr);gap:14px;}
+.swatch{display:flex;flex-direction:column;gap:8px;}
+.chip{height:64px;border-radius:8px;border:1px solid var(--color-border);}
+.label{font-family:var(--font-mono);font-size:11px;color:var(--fg-3);line-height:1.35;}
+.label b{display:block;color:var(--fg-1);font-weight:500;font-size:12px;margin-bottom:2px;}
+</style></head>
+<body class="tg-html"><div class="card">
+  <div class="swatch"><div class="chip" style="background:#737373"></div><div class="label"><b>muted</b>#737373</div></div>
+  <div class="swatch"><div class="chip" style="background:#e5e5e5"></div><div class="label"><b>text</b>#e5e5e5</div></div>
+  <div class="swatch"><div class="chip" style="background:#fafafa"></div><div class="label"><b>text-strong</b>#fafafa</div></div>
+  <div class="swatch"><div class="chip" style="background:#7dd3fc"></div><div class="label"><b>accent · sky</b>#7dd3fc</div></div>
+</div></body></html>

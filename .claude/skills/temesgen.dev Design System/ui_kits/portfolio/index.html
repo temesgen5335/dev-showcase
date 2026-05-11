@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>temesgen.dev — UI Kit</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div id="app"></div>
+
+  <script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+
+  <script type="text/babel" src="Components.jsx"></script>
+  <script type="text/babel" src="Hero.jsx"></script>
+  <script type="text/babel" src="ChatWidget.jsx"></script>
+
+  <script type="text/babel" data-presets="env,react">
+    const PROJECTS = [
+      { id: "chronos", title: "Chronos Finance", summary: "AI-powered personal finance super-app with biometric-first security and intelligent automation.", tags: ["Fintech", "AI Agents", "NLP", "Banking"], cover: "../../assets/projects/chronos1.png", liveUrl: "#", githubUrl: "" },
+      { id: "solveit", title: "SolveIT — AI Call Center", summary: "Multilingual NLP voice/text customer support with contextual document Q&A. Supports 50+ languages.", tags: ["NLP", "LLMs", "Voice", "Support"], cover: "../../assets/projects/solveit1.png", liveUrl: "#", githubUrl: "" },
+      { id: "hooklab", title: "Hook Lab — Agency Site", summary: "Portfolio site for a video-editing agency. Next.js, TailwindCSS, Framer Motion, shadcn/ui.", tags: ["Next.js", "Tailwind", "Agency"], cover: "../../assets/projects/hook-lab1.png", liveUrl: "#", githubUrl: "#" },
+    ];
+
+    function App() {
+      const [route, setRoute] = React.useState("home"); // home | experience | project
+      const [project, setProject] = React.useState(null);
+
+      function openProject(p) { setProject(p); setRoute("project"); window.scrollTo({ top: 0 }); }
+
+      return (
+        <>
+          <Nav active={route === "experience" ? "experience" : route === "project" ? "projects" : "experience"} />
+          <main className="container-x" style={{ paddingBlock: "3rem 5rem" }}>
+            {route === "home" && (
+              <>
+                <Hero animated={true} />
+                <section style={{ paddingBlock: "2.5rem 1rem" }}>
+                  <SectionLabel action="all projects →">featured work</SectionLabel>
+                  <div style={{ display: "grid", gap: "1rem", gridTemplateColumns: "repeat(auto-fit, minmax(18rem, 1fr))" }}>
+                    {PROJECTS.map((p) => (
+                      <ProjectCard key={p.id} {...p} onClick={() => openProject(p)} />
+                    ))}
+                  </div>
+                </section>
+                <Services />
+                <ContactCTA />
+                <div style={{ marginTop: "2rem", display: "flex", gap: "0.6rem" }}>
+                  <a className="btn" href="#" onClick={(e) => { e.preventDefault(); setRoute("experience"); }}>view experience →</a>
+                </div>
+              </>
+            )}
+            {route === "experience" && (
+              <>
+                <section style={{ paddingBlock: "1rem 2rem" }}>
+                  <div className="mono" style={{ color: "var(--color-muted)", fontSize: "0.78rem", marginBottom: "0.9rem" }}>~ experience · 4 roles · 2023 — present</div>
+                  <h1 style={{ fontSize: "clamp(1.6rem, 4vw, 2.4rem)", lineHeight: 1.1, margin: "0 0 0.6rem", fontFamily: "var(--font-sans)" }}>experience.</h1>
+                  <p style={{ color: "var(--color-text)", maxWidth: "44rem", lineHeight: 1.6, margin: "0 0 2rem" }}>Roles in AI engineering, full-stack development, and government technology — with measurable impact.</p>
+                </section>
+                <ExperienceTimeline />
+                <div style={{ marginTop: "2rem" }}>
+                  <a className="btn" href="#" onClick={(e) => { e.preventDefault(); setRoute("home"); }}>← back home</a>
+                </div>
+              </>
+            )}
+            {route === "project" && project && (
+              <>
+                <section style={{ paddingBlock: "1rem 2rem" }}>
+                  <div className="mono" style={{ color: "var(--color-muted)", fontSize: "0.78rem", marginBottom: "0.9rem" }}>~ projects / {project.id}</div>
+                  <h1 style={{ fontSize: "clamp(1.6rem, 4vw, 2.4rem)", lineHeight: 1.1, margin: "0 0 0.6rem", fontFamily: "var(--font-sans)" }}>{project.title}.</h1>
+                  <p style={{ color: "var(--color-text)", maxWidth: "44rem", lineHeight: 1.6, margin: "0 0 1.5rem" }}>{project.summary}</p>
+                  <div style={{ display: "flex", flexWrap: "wrap", gap: "0.35rem", marginBottom: "1.5rem" }}>
+                    {project.tags.map((t) => <span key={t} className="tag">{t}</span>)}
+                  </div>
+                  <div style={{ aspectRatio: "16/9", borderRadius: "0.5rem", overflow: "hidden", border: "1px solid var(--color-border)" }}>
+                    <img src={project.cover} alt={project.title} style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
+                  </div>
+                </section>
+                <div style={{ marginTop: "1rem", display: "flex", gap: "0.6rem" }}>
+                  {project.liveUrl && <a className="btn btn-primary" href={project.liveUrl}>visit live ↗</a>}
+                  {project.githubUrl && <a className="btn" href={project.githubUrl}>view repo ↗</a>}
+                  <a className="btn" href="#" onClick={(e) => { e.preventDefault(); setRoute("home"); }}>← back home</a>
+                </div>
+              </>
+            )}
+          </main>
+          <Footer />
+          <ChatWidget />
+        </>
+      );
+    }
+    ReactDOM.createRoot(document.getElementById("app")).render(<App />);
+  </script>
+</body>
+</html>

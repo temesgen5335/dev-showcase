@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=700">
+<title>Components — Form & Chat input</title>
+<link rel="stylesheet" href="../colors_and_type.css">
+<style>
+html,body{margin:0;background:var(--color-bg);color:var(--fg-2);font-family:var(--font-sans);}
+.card{padding:22px 28px;display:flex;flex-direction:column;gap:14px;}
+.spec{font-family:var(--font-mono);font-size:10px;color:var(--fg-3);}
+.input{width:100%;box-sizing:border-box;padding:8px 10.4px;border-radius:5.6px;border:1px solid var(--color-border);background:var(--color-bg);color:var(--fg-2);font-size:13.6px;font-family:var(--font-sans);outline:none;}
+.input::placeholder{color:var(--fg-3);}
+.input:focus{border-color:var(--color-border-hover);}
+.row{display:flex;gap:8px;}
+.send{font-family:var(--font-mono);font-size:12.8px;padding:0 14.4px;border-radius:5.6px;border:1px solid var(--color-border);background:var(--fg-1);color:#000;cursor:pointer;}
+</style></head>
+<body class="tg-html"><div class="card">
+  <div><div class="spec" style="margin-bottom:6px">text input · resting</div>
+    <input class="input" placeholder="ask anything about temesgen…">
+  </div>
+  <div><div class="spec" style="margin-bottom:6px">chat composer · input + send</div>
+    <div class="row"><input class="input" placeholder="ask anything about temesgen…"><button class="send">send</button></div>
+  </div>
+  <div><div class="spec" style="margin-bottom:6px">textarea · contact form</div>
+    <textarea class="input" rows="3" placeholder="what are you building?"></textarea>
+  </div>
+</div></body></html>

@@ -1,0 +1,147 @@
+/* ──────────────────────────────────────────────────────────────────────────
+   temesgen.dev — colors & type
+   Tokens lifted verbatim from temesgen-dev/src/styles/global.css.
+   Pair with Inter (400/500/600) + IBM Plex Mono (400/500/600) from Google Fonts.
+   ────────────────────────────────────────────────────────────────────────── */
+
+@import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600&display=swap");
+
+:root {
+  /* — Surfaces (deep-space neutrals, near-black scale) ───────────────── */
+  --color-bg: #0a0a0a;          /* page bg — derelict ship hull */
+  --color-surface: #111111;     /* card resting */
+  --color-surface-2: #171717;   /* card hover / nested surface */
+
+  /* — Borders ──────────────────────────────────────────────────────── */
+  --color-border: #262626;      /* default 1px hairline */
+  --color-border-hover: #404040;/* hover/active hairline */
+
+  /* — Text ─────────────────────────────────────────────────────────── */
+  --color-muted: #737373;       /* timestamps, // section labels, mono badges */
+  --color-text: #e5e5e5;        /* body */
+  --color-text-strong: #fafafa; /* headings, anchors, primary button bg */
+
+  /* — Accent (used like punctuation, never a fill) ─────────────────── */
+  --color-accent: #7dd3fc;      /* sky-300 — single accent across the system */
+  --color-accent-soft: rgba(125, 211, 252, 0.06); /* horizon grid lines */
+  --color-accent-glow: rgba(125, 211, 252, 0.18); /* cursor radial peak */
+
+  /* — Semantic foreground aliases ──────────────────────────────────── */
+  --fg-1: var(--color-text-strong);
+  --fg-2: var(--color-text);
+  --fg-3: var(--color-muted);
+
+  /* — Type families ────────────────────────────────────────────────── */
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  /* — Type scale (derived from Hero + ProjectCard usage) ───────────── */
+  --fs-display: clamp(2rem, 5vw, 3.4rem);   /* hero h1 (sans, lowercase ok) */
+  --fs-h1: 1.4rem;                          /* section hero */
+  --fs-h2: 1rem;                            /* card title */
+  --fs-h3: 0.95rem;                         /* small heading */
+  --fs-body: 1rem;                          /* paragraph */
+  --fs-body-sm: 0.88rem;                    /* card body */
+  --fs-mono-md: 0.95rem;                    /* mono role line */
+  --fs-mono: 0.85rem;                       /* btn label */
+  --fs-mono-sm: 0.82rem;                    /* nav link */
+  --fs-mono-xs: 0.78rem;                    /* mono badge / muted meta */
+  --fs-tag: 0.72rem;                        /* tag / chip */
+  --fs-tag-xs: 0.7rem;                      /* link adornments e.g. live ↗ */
+
+  /* — Tracking / leading ───────────────────────────────────────────── */
+  --tracking-tight: -0.02em;                /* h1–h4 */
+  --leading-body: 1.6;
+  --leading-tight: 1.05;                    /* hero name */
+  --leading-card: 1.55;                     /* card body */
+
+  /* — Radii ────────────────────────────────────────────────────────── */
+  --radius-xs: 0.25rem;   /* tag */
+  --radius-sm: 0.35rem;   /* input, chat input */
+  --radius-md: 0.375rem;  /* button */
+  --radius-lg: 0.4rem;    /* project cover */
+  --radius-xl: 0.5rem;    /* card */
+  --radius-2xl: 0.6rem;   /* chat panel */
+  --radius-pill: 999px;   /* chat fab */
+
+  /* — Spacing (unprescribed, but these are the values in use) ──────── */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.6rem;
+  --space-4: 0.9rem;
+  --space-5: 1rem;
+  --space-6: 1.25rem;
+  --space-7: 1.5rem;     /* container inline padding */
+  --space-8: 2rem;
+  --space-9: 3rem;
+  --space-10: 4rem;
+  --space-11: 5rem;
+
+  /* — Layout ───────────────────────────────────────────────────────── */
+  --container-max: 64rem;
+
+  /* — Elevation ────────────────────────────────────────────────────── */
+  --shadow-popover: 0 18px 50px rgba(0, 0, 0, 0.5); /* chat widget */
+
+  /* — Motion ───────────────────────────────────────────────────────── */
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --dur-fast: 150ms; /* hover transitions */
+  --dur-mid: 300ms;
+  --dur-slow: 2000ms; /* idle pulse loop */
+}
+
+/* ──────────────────────────────────────────────────────────────────────────
+   Semantic element styles — opt-in via class so this file can be imported
+   into mocks without clobbering Tailwind preflight in the real codebase.
+   ────────────────────────────────────────────────────────────────────────── */
+
+.tg-html {
+  background: var(--color-bg);
+  color: var(--fg-2);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+.tg-h1, .tg-h2, .tg-h3, .tg-h4 {
+  font-family: var(--font-mono);
+  color: var(--fg-1);
+  letter-spacing: var(--tracking-tight);
+  font-weight: 500;
+  margin: 0;
+}
+
+.tg-display {
+  font-family: var(--font-sans);
+  font-size: var(--fs-display);
+  line-height: var(--leading-tight);
+  letter-spacing: var(--tracking-tight);
+  color: var(--fg-1);
+  font-weight: 500;
+}
+
+.tg-section-label {
+  /* "// featured work" */
+  font-family: var(--font-mono);
+  font-size: var(--fs-h3);
+  color: var(--fg-3);
+  margin: 0;
+}
+
+.tg-mono { font-family: var(--font-mono); }
+.tg-muted { color: var(--fg-3); }
+
+.tg-body {
+  font-size: var(--fs-body);
+  line-height: var(--leading-body);
+  color: var(--fg-2);
+}
+
+.tg-link {
+  color: var(--fg-1);
+  text-decoration: none;
+  transition: color var(--dur-fast) ease;
+}
+.tg-link:hover { color: var(--color-accent); }
+
+::selection { background: var(--color-accent); color: #000; }
