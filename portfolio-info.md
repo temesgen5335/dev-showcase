@@ -233,6 +233,12 @@ Deep LangGraph swarm orchestration for autonomous agent governance — monitors,
 Agentic event store and enterprise audit infrastructure — immutable memory and governance backbone for multi-agent AI systems, enabling full traceability of agent decisions and actions at production scale.
 - **Stack:** Python, event sourcing, multi-agent AI
 
+### 14. Portfolio 1
+First version of Temesgen's personal portfolio. Responsive Next.js site with project showcase, skills overview, dark mode, and Resend-powered contact form. Predecessor to temesgen.dev.
+- **Stack:** Next.js, React, TypeScript, Tailwind CSS, Resend
+- **Live:** https://temesgen-portfolio1.vercel.app
+- **GitHub:** https://github.com/temesgen5335/dev-portfolio
+
 ---
 
 ## Achievements (headline numbers)
