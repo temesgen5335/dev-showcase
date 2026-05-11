@@ -24,16 +24,16 @@ const PROVIDERS = [
     defaultModel: "llama-3.3-70b-versatile",
   },
   {
-    name: "openai" as const,
-    keyEnv: "OPENAI_API_KEY",
-    modelEnv: "OPENAI_MODEL",
-    defaultModel: "gpt-4o-mini",
-  },
-  {
     name: "gemini" as const,
     keyEnv: "GEMINI_API_KEY",
     modelEnv: "GEMINI_MODEL",
     defaultModel: "gemini-2.0-flash",
+  },  
+  {
+    name: "openai" as const,
+    keyEnv: "OPENAI_API_KEY",
+    modelEnv: "OPENAI_MODEL",
+    defaultModel: "gpt-4o-mini",
   },
   {
     name: "anthropic" as const,
