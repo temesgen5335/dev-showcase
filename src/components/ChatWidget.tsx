@@ -14,6 +14,51 @@ const SUGGESTIONS = [
   "What is his AI/ML stack?",
 ];
 
+// Rolling 24h chat persistence in localStorage. Per-browser, no server-side storage.
+const STORAGE_KEY = "temesgen-chat-v1";
+const TTL_MS = 24 * 60 * 60 * 1000;
+
+type StoredChat = { messages: Msg[]; expiresAt: number };
+
+function loadStoredChat(): Msg[] | null {
+  if (typeof window === "undefined") return null;
+  try {
+    const raw = window.localStorage.getItem(STORAGE_KEY);
+    if (!raw) return null;
+    const parsed = JSON.parse(raw) as Partial<StoredChat>;
+    if (!parsed || typeof parsed.expiresAt !== "number" || !Array.isArray(parsed.messages)) {
+      return null;
+    }
+    if (parsed.expiresAt < Date.now() || parsed.messages.length === 0) {
+      window.localStorage.removeItem(STORAGE_KEY);
+      return null;
+    }
+    const valid = parsed.messages.every(
+      (m): m is Msg =>
+        !!m &&
+        typeof (m as Msg).content === "string" &&
+        ((m as Msg).role === "user" || (m as Msg).role === "assistant"),
+    );
+    return valid ? (parsed.messages as Msg[]) : null;
+  } catch {
+    return null;
+  }
+}
+
+function persistChat(messages: Msg[]) {
+  if (typeof window === "undefined") return;
+  try {
+    if (messages.length <= 1) {
+      window.localStorage.removeItem(STORAGE_KEY);
+      return;
+    }
+    const data: StoredChat = { messages, expiresAt: Date.now() + TTL_MS };
+    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+  } catch {
+    /* quota exceeded / private mode — silently skip */
+  }
+}
+
 export default function ChatWidget() {
   const [open, setOpen] = useState(false);
   const [messages, setMessages] = useState<Msg[]>([GREETING]);
@@ -21,6 +66,22 @@ export default function ChatWidget() {
   const [streaming, setStreaming] = useState(false);
   const scrollerRef = useRef<HTMLDivElement>(null);
   const abortRef = useRef<AbortController | null>(null);
+  const loadedRef = useRef(false);
+
+  // Hydrate from localStorage after mount. SSR renders the greeting; the stored
+  // history (if any, and not expired) appears on the first client effect.
+  useEffect(() => {
+    const stored = loadStoredChat();
+    if (stored) setMessages(stored);
+    loadedRef.current = true;
+  }, []);
+
+  // Persist on every messages change once the initial load has run.
+  // Rolling TTL: each interaction extends the 24h window.
+  useEffect(() => {
+    if (!loadedRef.current) return;
+    persistChat(messages);
+  }, [messages]);
 
   useEffect(() => {
     scrollerRef.current?.scrollTo({
@@ -28,6 +89,17 @@ export default function ChatWidget() {
       behavior: "smooth",
     });
   }, [messages, open]);
+
+  function clearHistory() {
+    setMessages([GREETING]);
+    if (typeof window !== "undefined") {
+      try {
+        window.localStorage.removeItem(STORAGE_KEY);
+      } catch {
+        /* ignore */
+      }
+    }
+  }
 
   async function send(text: string) {
     const trimmed = text.trim();
@@ -134,12 +206,40 @@ export default function ChatWidget() {
               fontFamily: "var(--font-mono)",
               fontSize: "0.85rem",
               color: "var(--color-text-strong)",
+              display: "flex",
+              alignItems: "baseline",
+              justifyContent: "space-between",
+              gap: "0.5rem",
             }}
           >
-            ask my portfolio
-            <span style={{ color: "var(--color-muted)", marginLeft: "0.5rem", fontSize: "0.72rem" }}>
-              grounded on temesgen's CV
-            </span>
+            <div>
+              ask my portfolio
+              <span style={{ color: "var(--color-muted)", marginLeft: "0.5rem", fontSize: "0.72rem" }}>
+                grounded on temesgen's CV
+              </span>
+            </div>
+            {messages.length > 1 && (
+              <button
+                type="button"
+                onClick={clearHistory}
+                disabled={streaming}
+                aria-label="Clear chat history"
+                title="Clear chat history (stored locally on your device, expires after 24h)"
+                style={{
+                  fontFamily: "var(--font-mono)",
+                  fontSize: "0.7rem",
+                  padding: "0.2rem 0.45rem",
+                  border: "1px solid var(--color-border)",
+                  borderRadius: "0.3rem",
+                  background: "transparent",
+                  color: "var(--color-muted)",
+                  cursor: streaming ? "not-allowed" : "pointer",
+                  opacity: streaming ? 0.5 : 1,
+                }}
+              >
+                clear
+              </button>
+            )}
           </div>
           <div
             ref={scrollerRef}
