@@ -231,7 +231,7 @@ import { site } from "@/data/site";
 
     idle(() => {
       if (stars)   initStarfield(stars, root);
-      if (gridSvg) (gridSvg as HTMLElement).style.opacity = "1";
+      if (gridSvg) gridSvg.style.opacity = "1";
       if (cursor && !coarse) initCursor(cursor, root);
     });
 

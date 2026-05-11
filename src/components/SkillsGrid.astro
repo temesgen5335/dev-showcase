@@ -3,9 +3,10 @@ import { skillGroups } from "@/data/skills";
 ---
 <div style="display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));">
   {skillGroups.map((g) => (
-    <div class="card" style="padding: 1rem 1.2rem;">
-      <h3 style="margin: 0 0 0.6rem; font-size: 0.85rem; color: var(--color-muted);">
-        // {g.group.toLowerCase()}
+    <div class="card skills-card" style="padding: 1rem 1.2rem;">
+      <h3 class="skills-heading" style="margin: 0 0 0.7rem; font-size: 0.88rem;">
+        <span class="skills-heading-slashes">//</span>
+        <span class="skills-heading-label">{g.group.toLowerCase()}</span>
       </h3>
       <div style="display: flex; flex-wrap: wrap; gap: 0.35rem;">
         {g.items.map((item) => <span class="tag">{item}</span>)}
@@ -13,3 +14,46 @@ import { skillGroups } from "@/data/skills";
     </div>
   ))}
 </div>
+
+<style>
+  .skills-heading {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 0.4rem;
+    letter-spacing: 0;
+  }
+  .skills-heading-slashes {
+    color: var(--color-muted);
+  }
+  /* Dimmed antique-gold glow — cyber-punk / space-traveler accent, scoped to skills only. */
+  .skills-heading-label {
+    color: var(--color-text-strong);
+    text-shadow:
+      0 0 1px rgba(212, 165, 72, 0.45),
+      0 0 12px rgba(212, 165, 72, 0.28);
+    transition: text-shadow 200ms ease, color 200ms ease;
+  }
+  .skills-card:hover .skills-heading-label {
+    color: #e8c365;
+    text-shadow:
+      0 0 1px rgba(212, 165, 72, 0.7),
+      0 0 18px rgba(212, 165, 72, 0.5);
+  }
+  /* Scoped tag override: skill items read in full white, not the global muted gray. */
+  .skills-card .tag {
+    color: var(--color-text-strong);
+    border-color: var(--color-border-hover);
+    transition: border-color 150ms ease, color 150ms ease;
+  }
+  .skills-card .tag:hover {
+    color: #e8c365;
+    border-color: rgba(212, 165, 72, 0.7);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .skills-heading-label,
+    .skills-card:hover .skills-heading-label,
+    .skills-card .tag {
+      transition: none;
+    }
+  }
+</style>

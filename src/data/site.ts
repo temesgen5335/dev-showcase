@@ -1,7 +1,7 @@
 export const site = {
   name: "Temesgen Gebreabzgi",
   shortName: "temesgen.dev",
-  title: "AI Software Engineer",
+  title: "Senior Software Engineer",
   subtitle: "Certified AI Engineer · Building scalable full-stack AI systems",
   location: "Addis Ababa, Ethiopia",
   tagline: "Turning ideas into intelligent solutions.",
