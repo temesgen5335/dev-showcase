@@ -25,19 +25,18 @@ import { skillGroups } from "@/data/skills";
   .skills-heading-slashes {
     color: var(--color-muted);
   }
-  /* Dimmed antique-gold glow — cyber-punk / space-traveler accent, scoped to skills only. */
   .skills-heading-label {
     color: var(--color-text-strong);
     text-shadow:
-      0 0 1px rgba(212, 165, 72, 0.45),
-      0 0 12px rgba(212, 165, 72, 0.28);
+      0 0 1px rgba(125, 211, 252, 0.45),
+      0 0 12px rgba(125, 211, 252, 0.28);
     transition: text-shadow 200ms ease, color 200ms ease;
   }
   .skills-card:hover .skills-heading-label {
-    color: #e8c365;
+    color: var(--color-accent);
     text-shadow:
-      0 0 1px rgba(212, 165, 72, 0.7),
-      0 0 18px rgba(212, 165, 72, 0.5);
+      0 0 1px rgba(125, 211, 252, 0.7),
+      0 0 18px rgba(125, 211, 252, 0.5);
   }
   /* Scoped tag override: skill items read in full white, not the global muted gray. */
   .skills-card .tag {
@@ -46,8 +45,8 @@ import { skillGroups } from "@/data/skills";
     transition: border-color 150ms ease, color 150ms ease;
   }
   .skills-card .tag:hover {
-    color: #e8c365;
-    border-color: rgba(212, 165, 72, 0.7);
+    color: var(--color-accent);
+    border-color: var(--color-accent);
   }
   @media (prefers-reduced-motion: reduce) {
     .skills-heading-label,

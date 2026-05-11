@@ -3,7 +3,6 @@ import Base from "@/layouts/Base.astro";
 import { site, socials } from "@/data/site";
 ---
 <Base title="Contact" description={`Get in touch with ${site.name}.`}>
-  <div class="contact-page">
   <header style="margin-bottom: 2rem;">
     <div class="mono" style="color: var(--color-muted); font-size: 0.78rem; margin-bottom: 0.6rem;">// contact</div>
     <h1 style="margin: 0 0 0.8rem; font-size: clamp(1.8rem, 4vw, 2.6rem);">Let's talk.</h1>
@@ -74,41 +73,8 @@ import { site, socials } from "@/data/site";
       </div>
     </aside>
   </div>
-  </div>
 
   <style>
-    /* Cyber-punk / space-traveler accent: scoped to /contact only. */
-    .contact-page a {
-      transition: color 150ms ease, text-shadow 200ms ease;
-    }
-    .contact-page a:hover {
-      color: #e8c365;
-      text-shadow:
-        0 0 1px rgba(212, 165, 72, 0.55),
-        0 0 12px rgba(212, 165, 72, 0.32);
-    }
-    .contact-page input,
-    .contact-page textarea {
-      transition: border-color 150ms ease, box-shadow 200ms ease;
-    }
-    .contact-page input:focus,
-    .contact-page textarea:focus {
-      outline: none;
-      border-color: rgba(212, 165, 72, 0.7);
-      box-shadow: 0 0 0 3px rgba(212, 165, 72, 0.18);
-    }
-    .contact-page .btn-primary:hover {
-      background: #e8c365;
-      border-color: #e8c365;
-      color: #000;
-    }
-    @media (prefers-reduced-motion: reduce) {
-      .contact-page a,
-      .contact-page input,
-      .contact-page textarea {
-        transition: none;
-      }
-    }
     @media (max-width: 42rem) {
       .contact-grid {
         grid-template-columns: minmax(0, 1fr) !important;
