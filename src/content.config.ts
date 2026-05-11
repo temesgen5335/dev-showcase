@@ -1,5 +1,6 @@
 import { defineCollection, z } from "astro:content";
 import { glob } from "astro/loaders";
+import { mediumLoader } from "@/loaders/medium";
 
 const projects = defineCollection({
   loader: glob({ pattern: "**/*.mdx", base: "./src/content/projects" }),
@@ -44,4 +45,15 @@ const posts = defineCollection({
   }),
 });
 
-export const collections = { projects, experience, posts };
+const medium = defineCollection({
+  loader: mediumLoader({ handle: "@temesgen5335" }),
+  schema: z.object({
+    title: z.string(),
+    link: z.string().url(),
+    publishDate: z.coerce.date(),
+    excerpt: z.string(),
+    categories: z.array(z.string()).default([]),
+  }),
+});
+
+export const collections = { projects, experience, posts, medium };
