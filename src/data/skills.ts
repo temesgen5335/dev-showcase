@@ -28,7 +28,7 @@ export const skillGroups = [
   },
   {
     group: "Databases",
-    items: ["PostgreSQL", "MongoDB", "MySQL", "FAISS", "Weaviate"],
+    items: ["PostgreSQL", "MongoDB", "MySQL", "Supabase", "FAISS", "Weaviate"],
   },
   {
     group: "Cloud",

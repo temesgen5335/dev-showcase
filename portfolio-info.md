@@ -32,7 +32,7 @@
 
 ## Professional Summary
 
-Ambitious AI Engineer with strong expertise in Generative AI, Machine Learning, Data Engineering, and Full-stack Software development. Proficient in Python, PyTorch, TensorFlow, Scikit-learn, and advanced AI tools such as LangChain, LlamaIndex, Hugging Face Transformers, and OpenAI APIs. Skilled in building agentic AI systems, Retrieval-Augmented Generation (RAG) pipelines, prompt engineering, and designing scalable data pipelines. Experienced in integrating AI into production-ready AI applications with real-world impact.
+AI Engineer and Full-Stack Developer with 3+ years of experience building and deploying scalable, production-ready applications with integrated Generative AI and machine learning systems. Proficient in Python, Next.js, Django, FastAPI, cloud platforms (AWS, GCP), and databases (PostgreSQL, MongoDB, Supabase). Skilled in LLM integration, RAG pipelines, agentic workflows, and AI tools including LangChain, LlamaIndex, Hugging Face, and OpenAI APIs, delivering reliable, high-impact software solutions.
 
 ## Taglines (for hero / OG)
 
@@ -52,7 +52,7 @@ I'm a full-stack developer and AI engineer with a passion for creating smart, sc
 **Remote · February 2026 – Present**
 
 - Tutoring forward-deployed engineers on agentic AI architectures, coding agents (Claude, Codex, Gemini), and LLM-powered automation across brownfield and greenfield projects.
-- Led trainee teams through weekly sprints on agentic systems, data engineering, and LLM fine-tuning — one team secured a top-10 spot on UC Berkeley's DataAgentBench.
+- Led trainee teams through weekly sprints on agentic systems, data engineering, and LLM fine-tuning — two teams secured a top-10 spot on UC Berkeley's DataAgentBench.
 - Built a program-agnostic meeting automation platform (FastAPI, Next.js, Strapi, PostgreSQL) that extracts Drive recordings via Notion schedules, auto-publishes to YouTube, and tracks attendance.
 - Enhancing an NLP-powered data dashboard with multi-agent query generation, enabling non-technical users to retrieve and visualize data from Strapi and Weaviate via natural language chat.
 
@@ -68,7 +68,7 @@ I'm a full-stack developer and AI engineer with a passion for creating smart, sc
 **Stack:** React, TypeScript, shadcn/ui, TailwindCSS, CI/CD.
 
 ### Founding AI Engineer — Chronos
-**San Francisco, California (Remote, Concurrent) · June 2025 – December 2025**
+**Remote (Concurrent engagement) · June 2025 – December 2025**
 
 - Designed and built Chronos' AI financial advisor, integrating NLP and recommendation models for personalized finance insights.
 - Developed and deployed AI-driven investment strategies (crypto, stocks, and NFTs) to support automated wealth management.
@@ -78,7 +78,7 @@ I'm a full-stack developer and AI engineer with a passion for creating smart, sc
 **Stack:** Python, FastAPI, NLP, recommendation systems, AI agents, multi-currency ledger design.
 
 ### Software Engineer — Bluespark Business Technology plc
-**Addis Ababa, Ethiopia · February 2025 – June 2025**
+**Addis Ababa, Ethiopia · January 2025 – June 2025**
 
 - Developed a scalable, customizable Sales Force Automation System using FastAPI, PostgreSQL, and Svelte.
 - Engineered reusable API endpoints and modular frontend components with OpenAPI/Swagger, TailwindCSS, and DaisyUI, reducing feature development time by **40%**.
@@ -87,7 +87,7 @@ I'm a full-stack developer and AI engineer with a passion for creating smart, sc
 **Stack:** FastAPI, PostgreSQL, Svelte, OpenAPI/Swagger, TailwindCSS, DaisyUI.
 
 ### Generative AI Engineer — 10 Academy
-**Santa Clara, California (Remote) · April 2024 – October 2024**
+**Remote (Concurrent engagement) · April 2024 – October 2024**
 
 - Engineered scalable data warehouses for LLM fine-tuning, utilizing web-scraped data to improve data processing & analysis efficiency by **25%**.
 - Designed and deployed an automated advertising storyboard generation system, enhancing creative output for marketing campaigns.
@@ -109,7 +109,7 @@ I'm a full-stack developer and AI engineer with a passion for creating smart, sc
 ## Education
 
 ### BSc in Information Systems — Addis Ababa University
-**Addis Ababa, Ethiopia · Graduated 2023**
+**Addis Ababa, Ethiopia · Graduated July 2023**
 
 Relevant coursework: Fundamentals of Programming, Data Structures and Algorithms (DSA), Object-Oriented Programming (OOP), Software Development Life Cycle (SDLC), Database Management Systems (DBMS), Applied Mathematics, Statistics, Information Security, Artificial Intelligence (AI), Data Science and Analytics, Enterprise Resource Planning (ERP) Systems.
 
@@ -133,7 +133,7 @@ Completed intensive applied ML / Generative AI curriculum alongside contract eng
 - Docker, MLflow, DVC, Apache Airflow, Apache Kafka, CI/CD, n8n
 
 **Databases**
-- PostgreSQL, MongoDB, MySQL, Vector DBs (FAISS, Weaviate)
+- PostgreSQL, MongoDB, MySQL, Supabase, Vector DBs (FAISS, Weaviate)
 
 **Cloud**
 - AWS, Azure
