@@ -1,0 +1,22 @@
+---
+title: "Client Report Portal"
+summary: "Internal portal for a financial planning firm that replaces a manual full-day quarterly workflow with structured data entry, live-calculating forms, and one-click branded PDF reports (SACS cashflow + TCC net worth)."
+tags: ["Internal Tools", "Automation", "Fintech"]
+stack: ["Next.js 16", "TypeScript", "Prisma", "Tailwind v4", "react-pdf", "Zod"]
+githubUrl: "https://github.com/temesgen5335/AW-Client-Report-Portal"
+liveUrl: "https://aw-client-report-portal-self.vercel.app"
+cover: "/projects/client-report-portal1.jpg"
+gallery:
+  - "/projects/client-report-portal1.jpg"
+  - "/projects/client-report-portal2.jpg"
+  - "/projects/client-report-portal3.jpg"
+featured: false
+order: 15
+impact:
+  - "Collapses a recurring full-day quarterly reporting process into a guided form with live totals and validation gates."
+  - "Generates pixel-stable, branded SACS cashflow and TCC net-worth PDFs in one click — no manual spreadsheet math."
+---
+
+Client Report Portal is a working demo built for a three-person financial planning firm whose quarterly client reporting was a manual, error-prone, full-day exercise. Household details are entered once; each quarter the advisor opens a pre-filled report form that inherits static data and last quarter's values, leaving only the new balances to key in. The math — cashflow excess, private-reserve targets, grand-total net worth — updates live as you type, and the Generate button stays disabled until every required balance is present.
+
+The result is two polished, pixel-stable PDFs per client: a SACS cashflow report and a TCC net-worth overview. Built on Next.js 16 with Prisma, server-rendered PDFs via `@react-pdf/renderer`, and Zod validation at every API boundary — a single-runtime deploy with no Python subprocess in the loop.

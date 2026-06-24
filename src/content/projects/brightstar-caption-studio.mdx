@@ -1,0 +1,21 @@
+---
+title: "Brightstar Caption Studio"
+summary: "AI caption studio that writes on-brand social posts for five distinct client voices — onboarding each brand once into a reusable Voice Profile, then drafting three variants, self-critiquing, and recommending the most on-brand pick."
+tags: ["AI Agents", "Content Generation", "LLM"]
+stack: ["Python", "Two-stage Agent", "Multi-provider LLM", "Vercel"]
+githubUrl: "https://github.com/temesgen5335/brightstar-caption-studio-prototype"
+liveUrl: "https://brightstar-caption-studio-prototype.vercel.app"
+cover: "/projects/brightstar-caption-studio1.jpg"
+gallery:
+  - "/projects/brightstar-caption-studio1.jpg"
+  - "/projects/brightstar-caption-studio2.jpg"
+featured: false
+order: 16
+impact:
+  - "Turns a social manager's ~4 hours/week of caption writing into minutes — without flattening five brands into one generic AI voice."
+  - "Provider-agnostic generation with automatic failover across LLM providers; a lighter judge model gates quality so generic filler and banned phrases get scored down."
+---
+
+Brightstar Caption Studio solves the part of caption writing that chatbots get wrong: sounding like five *different* humans — a glam salon, a nostalgic family restaurant, a no-BS auto shop, a high-energy gym, and a quiet home-goods boutique — instead of collapsing them all into the same "Elevate your experience! ✨" mush. The key idea is the **Voice Profile**: each brand is learned once from a handful of sample posts into a structured artifact (tone, vocabulary tics, emoji habits, hashtag strategy, CTA style, banned phrases) that every future caption is generated against.
+
+It runs as a two-stage agent: a capable model drafts three distinct variants at higher temperature, then a lighter judge model scores each and picks the most on-brand winner — a quality gate that penalizes generic filler without paying generation prices to grade its own homework. Only the client layer touches a model, walking a chain of providers so a rate limit or out-of-credits error routes to the next provider automatically.
