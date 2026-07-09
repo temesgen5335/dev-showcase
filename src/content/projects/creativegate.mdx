@@ -1,0 +1,24 @@
+---
+title: "CreativeGate"
+summary: "A simulation-first evaluation funnel for digital creative — evaluate ad copy, captions, and images before you spend, then keep every cheap evaluator honest by continuously calibrating it against real-world outcomes."
+tags: ["AI Evaluation", "Calibration", "AdTech"]
+stack: ["Python", "FastAPI", "GBM Ensemble", "LLM-as-Judge", "Railway"]
+githubUrl: "https://github.com/temesgen5335/CreativeGate"
+liveUrl: "https://creativegate.up.railway.app/"
+cover: "/projects/creativegate-1.png"
+gallery:
+  - "/projects/creativegate-1.png"
+  - "/projects/creativegate-2.png"
+  - "/projects/creativegate-3.png"
+featured: true
+order: 2
+impact:
+  - "Filters weak creative before it reaches paid spend — a wind tunnel for ads that decides what actually deserves a live test."
+  - "A calibration harness re-scores every cheap rung against real outcomes and auto-cuts drifting fusion weights, so the funnel can't quietly become confident noise."
+---
+
+CreativeGate is a simulation-first evaluation funnel for digital creative artifacts. Given a creative (ad copy, caption, image) and a ground-truth set of artifacts with known real-world outcomes, it answers a single question: *how likely is this to work on real users — with what confidence, according to which validated evaluators, and what is the cheapest next test that would raise that confidence?*
+
+The metaphor is a **wind tunnel**. Most digital creative skips instrumented testing and goes from generation straight to spend. CreativeGate is the wind tunnel — plus the discipline that keeps one honest. Artifacts fall through three escalating rungs: a free **deterministic gate** (banned claims, required CTA, structural specs), a cheap **performance predictor** (a GBM ensemble over engineered + embedding features), and a moderate **calibrated judge ensemble** (pairwise A/B against known-outcome anchors). Survivors are fused into a single score *with a confidence band* — never a bare point score — plus an evidence ledger for every decision and a cheapest-next-test recommendation.
+
+The differentiator is the **calibration harness**: when real outcomes arrive, it joins predictions to reality, recomputes per-rung correlation, and raises a drift alarm that automatically cuts a decaying rung's weight. Safety rails are encoded as the spine of the test suite — an uncalibrated rung can never carry fusion weight, and no rung can report validity it hasn't earned. Models are enhancers, never dependencies: with zero API keys the judge falls back to a deterministic comparator and the predictor to TF-IDF embeddings, both clearly labeled `degraded` fidelity. Ships with a Dockerfile and Railway config as a single always-on service.

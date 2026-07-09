@@ -1,0 +1,18 @@
+---
+title: "QueryGuard"
+summary: "Agentic search-term auditing for Google Ads — finds the broad-match budget killers, surfaces expansion winners, and clusters both into a human review gate before any negative keyword is applied."
+tags: ["AI Agents", "AdTech", "MCP"]
+stack: ["Python", "FastAPI", "Embeddings", "MCP Server"]
+githubUrl: "https://github.com/temesgen5335/QueryGuard"
+featured: false
+order: 5
+impact:
+  - "Turns the manual search-terms report hunt into one pipeline: intent profile → term scoring → KEEP / WATCH / BUDGET_KILLER / EXPANSION classification → drift-themed clusters."
+  - "Nothing is applied automatically — the human review gate is the product, and it survives every transport (CLI, API, and MCP tools for agent stacks)."
+---
+
+Every Google Ads account bleeds money on broad-match drift — queries like *"free cabin plans diy"* burning spend on a campaign that sells cabin getaways. Marketers hunt these by hand in the search-terms report. QueryGuard automates the hunt into one explainable pipeline: it embeds the campaign description, seeds, and converting terms into an intent centroid, scores each term by semantic relevance × spend economics, classifies it (KEEP / WATCH / BUDGET_KILLER / EXPANSION) with a rationale, then clusters the killers by drift theme with a suggested match type.
+
+No ad-account access is needed — input is the standard search-terms report export, and output (`negatives.csv`, `expansions.csv`, and an HTML report) imports straight into Google Ads Editor. The design principles are deterministic economics, semantic relevance, and explainable verdicts: every classification carries its reasoning, embeddings resolve to the best available (Gemini API → local sentence-transformers → offline TF-IDF), and safety beats recall — cluster negatives never form on the campaign's own intent vocabulary, and converting terms can never be flagged as killers.
+
+The same audit is exposed three ways — a CLI, a FastAPI + web UI, and an **MCP server** so agent stacks (Claude Code, n8n, personal agents) can run audits natively over stdio. All three share one audit store, so an audit created by an agent is reviewable in the web UI and vice versa. Crucially, the human gate survives the transport: exports include only approved clusters by default, whether the approval came from a checkbox in the UI or an explicit human decision relayed through an agent. Recommendations, not actions.
