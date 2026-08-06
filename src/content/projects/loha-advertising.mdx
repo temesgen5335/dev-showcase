@@ -1,0 +1,25 @@
+---
+title: "LOHA Advertising PLC"
+summary: "Trilingual marketing site for an Ethiopian supplier running three lines of business at once — printing and signage, trucked well water, and building blocks — built so a walk-in customer in Sebeta can read it in their own language and get a quote without a backend in the loop."
+tags: ["Client Work", "Marketing Site", "i18n"]
+stack: ["Next.js 16", "React 19", "TypeScript", "Tailwind v4", "Vercel"]
+githubUrl: "https://github.com/temesgen5335/loha.plc.website"
+liveUrl: "https://loha-plc-website.vercel.app"
+cover: "/projects/loha-advertising-1.png"
+gallery:
+  - "/projects/loha-advertising-1.png"
+  - "/projects/loha-advertising-2.png"
+  - "/projects/loha-advertising-3.png"
+  - "/projects/loha-advertising-4.png"
+featured: false
+order: 11
+impact:
+  - "Three languages — English, Amharic, and Afan Oromo — served from one typed dictionary under a `[locale]` route segment, so adding a locale is a data change rather than a template fork."
+  - "Zero backend: the quote form composes a pre-addressed mail handoff and the site deploys as static output, which keeps hosting free and gives the client nothing to maintain."
+---
+
+LOHA Advertising PLC sells printing and signage, delivers clean well water by truck, and supplies building blocks — three businesses that share a customer base but not a product page. The brief was a single site that presents all three without reading like a directory, and that a customer in Sebeta can actually read.
+
+Language was the real constraint. The site ships English, Amharic, and Afan Oromo, and rather than three parallel page trees it uses one `[locale]` route segment over a single typed `Dictionary` — `meta`, `nav`, `hero`, `services`, `printing`, `why`, `contact`, `form`, `gallery`, `map`, `footer` — where each locale must satisfy the same shape. TypeScript then does the tedious part: a key added to English fails the build until every language has it, so a half-translated deploy isn't possible. Sixteen printing offerings (t-shirts, mugs, caps, banners, lightbox and LED signs, frosted films, stickers, stamps, receipt books, invitation cards, posters, certificates, albums, magazines, office tags) are content, not markup.
+
+Everything after that is deliberately backend-free. The work gallery reads from a static config with client-side category filters (LED Signs, Printing, T-Shirts, Awards & Engraving) over real photographs from the workshop — engraved awards mid-cut on the machine, printed name tags fresh off the press — because a small supplier's credibility is its output, not stock imagery. The quote form collects the request and hands off to the customer's mail client pre-addressed, with the phone numbers shown alongside for the many customers who'd rather just call. Contact closes on an embedded map to the Sebeta location. Next.js 16 with React 19 and Tailwind v4, deployed on Vercel.

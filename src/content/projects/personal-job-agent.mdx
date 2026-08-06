@@ -1,0 +1,23 @@
+---
+title: "Personal Job Agent"
+summary: "A self-hosted job-hunting agent that ingests postings from six sources, scores every one against a real CV with heuristics plus an LLM, and hands back only the shortlist worth a human decision — then drafts the application for it."
+tags: ["AI Agents", "Automation", "Job Search"]
+stack: ["Python", "FastAPI", "SQLite", "Playwright", "Astro", "Telegram Bot API"]
+githubUrl: "https://github.com/temesgen5335/Personal-Job-Hunting-Agent"
+cover: "/projects/personal-job-agent-1.png"
+gallery:
+  - "/projects/personal-job-agent-1.png"
+  - "/projects/personal-job-agent-2.png"
+featured: true
+order: 4
+impact:
+  - "11,705 postings ingested, deduplicated, and scored across six sources — narrowed to 286 strong matches at ≥70% fit, so the daily decision surface is a shortlist instead of a feed."
+  - "Every score carries its rationale — matched keywords, skill hits, and the LLM's explicit gaps — so a low score is auditable rather than a black box."
+  - "206 tests passing with CI on every push; bearer tokens required on all state-changing routes."
+---
+
+Job hunting at senior level is a filtering problem wearing a search problem's clothes. The postings are public and plentiful; what's expensive is reading 2,000 of them a week to find the twelve that are actually a fit. Personal Job Agent is the filter — a self-hosted pipeline that runs the boring 99% so the human only touches the shortlist.
+
+Six ingestion adapters (Telegram channels, RemoteOK, Remotive, Greenhouse, Lever, Ashby) normalize wildly different payloads into one SQLite schema and deduplicate across sources, because the same role posted to three boards should cost one decision, not three. Scoring is deliberately two-tier: a cheap heuristic pass on title keywords, weighted skills, and location constraints, then an LLM pass that reasons about fit and — more usefully — states its **gaps** out loud ("no experience with Twilio's proprietary communication platform"). Both halves of the score are stored with their reasoning, so triage is reviewing an argument, not trusting a number. The LLM layer fails over across Groq → Gemini → OpenRouter → OpenAI → Anthropic, so a single provider's quota wall never stalls a run.
+
+Past scoring, the agent drafts: tailored CV, cover letter, and email per opportunity, with Tier-1 roles going out by email and Tier-2 handled by Playwright driving the ATS form. Nothing is submitted without approval — the pipeline stages work at `awaiting_approval` and stops. Two front-ends read the same FastAPI orchestrator: a Telegram bot for triage from a phone, and an Astro dashboard for pipeline health, funnel conversion, and the staleness alarm that fires when the last successful ingestion is older than 24 hours. Runs on a VPS with scheduled ingestion, or free on GitHub Actions in daily-digest mode.

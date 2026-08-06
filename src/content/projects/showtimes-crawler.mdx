@@ -1,0 +1,25 @@
+---
+title: "Showtimes Crawler"
+summary: "A queue-based web crawler in Nest.js — POST a URL, a worker fetches and extracts it asynchronously, and every slow, fragile part of scraping (fetch engine, user-agent rotation, proxies, rate limits, cancellation) is governed centrally. Built for International Showtimes, designed for 25,000+ sites."
+tags: ["Web Crawling", "Distributed Systems", "Backend"]
+stack: ["Nest.js", "TypeScript", "BullMQ", "Redis", "Puppeteer", "Cheerio", "Docker"]
+githubUrl: "https://github.com/temesgen5335/showtimes-crawler"
+liveUrl: "https://showtimes-crawler.onrender.com"
+cover: "/projects/showtimes-crawler-1.png"
+gallery:
+  - "/projects/showtimes-crawler-1.png"
+  - "/projects/showtimes-crawler-2.png"
+  - "/projects/showtimes-crawler-3.png"
+featured: true
+order: 5
+impact:
+  - "Scored 100% extraction against traumpalast.de — a live German cinema chain, the client's own home turf — in 2.19s on the cheap HTTP engine with no proxy: redirect followed, cross-origin CDN assets resolved to absolute, German unicode intact, favicon fallback correct."
+  - "43 offline tests across 8 suites, every one running with network and Redis mocked — the suite is fast enough to gate every commit and honest enough to catch extraction regressions."
+  - "Cancellation models the real state machine instead of faking it: queued jobs are removed outright, active jobs abort at the next checkpoint, completed jobs return 409 rather than pretending a finished fetch can be undone."
+---
+
+A crawler's hard problem is not fetching a page — it's staying cheap and unblocked at volume. Showtimes Crawler was built as the senior-crawler assessment for International Showtimes with a target of 25,000+ cinema sites, so the whole design question was: which parts must be centrally governed so that scaling doesn't mean scaling the number of places a mistake can hide?
+
+The shape is producer–consumer. `POST /crawl` validates and enqueues, returning a job id immediately; a BullMQ worker (Redis-backed) picks it up, fetches, extracts title, meta description, favicon, scripts, stylesheets, and images, and writes the result onto the job payload with 24-hour retention; clients poll `GET /status/:id`. The fetch step sits behind a pluggable `PageFetcher` with two interchangeable engines — Axios for plain HTTP, Puppeteer for pages that need JS — so engine choice is a per-job parameter rather than a fork in the codebase. **Cheap first**: the HTTP engine handles the common case, and the browser is the escalation, not the default. Anti-blocking lives in one place too: round-robin user-agent rotation, proxy rotation supporting authenticated `http://user:pass@host:port`, and worker-level rate limiting, all applied to every job by construction instead of by remembering to.
+
+Operationally it's built to be inspected. Swagger UI at `/docs` for interactive endpoint testing, a Bull Board dashboard at `/admin/queues` to watch live jobs and their return values, `GET /health` that reports 200 only when Redis *and* the worker are actually connected (503 otherwise, so a platform probe can't be fooled by a live HTTP server with a dead worker), and a `/roadmap` walkthrough documenting the architecture and its shortcomings. Ships as a multi-stage Docker image running non-root with `dumb-init` for child-process reaping and a configurable system Chromium path, plus a Render blueprint that provisions the service and managed Redis with the connection string injected.

@@ -239,6 +239,28 @@ First version of Temesgen's personal portfolio. Responsive Next.js site with pro
 - **Live:** https://temesgen-portfolio1.vercel.app
 - **GitHub:** https://github.com/temesgen5335/dev-portfolio
 
+### 15. Personal Job Agent
+Self-hosted job-hunting agent. Ingests postings from six sources (Telegram channels, RemoteOK, Remotive, Greenhouse, Lever, Ashby), deduplicates them into SQLite, and scores each against Temesgen's CV with a cheap heuristic pass plus an LLM pass that states its reasoning and gaps explicitly. Drafts tailored CV, cover letter, and email per opportunity; Tier-1 roles go out by email, Tier-2 via Playwright ATS form-filling. Nothing submits without human approval. Triage via Telegram bot, analytics via an Astro dashboard, both over one FastAPI orchestrator.
+- **Impact:** 11,705 postings ingested and scored, narrowed to 286 strong matches at ≥70% fit; 206 tests passing with CI on every push
+- **Stack:** Python, FastAPI, SQLite, Playwright, Astro, Telegram Bot API; LLM failover Groq → Gemini → OpenRouter → OpenAI → Anthropic
+- **GitHub:** https://github.com/temesgen5335/Personal-Job-Hunting-Agent
+- **Images:** `personal-job-agent-1.png` – `personal-job-agent-2.png`
+
+### 16. Showtimes Crawler
+Queue-based web crawler built as the senior-crawler assessment for International Showtimes, designed for 25,000+ cinema sites. POST a URL, a BullMQ worker fetches and extracts it asynchronously, and everything slow or fragile — fetch engine, user-agent rotation, proxy rotation, rate limiting, cancellation — is governed centrally. Pluggable `PageFetcher` with two interchangeable engines (Axios for plain HTTP, Puppeteer for JS-rendered pages), cheap-first by default.
+- **Impact:** 100% extraction score against traumpalast.de (a live German cinema chain, the client's own domain) in 2.19s on the HTTP engine with no proxy; 43 offline tests across 8 suites with network and Redis mocked
+- **Stack:** Nest.js, TypeScript, BullMQ, Redis, Puppeteer, Cheerio, Docker, Render
+- **Live:** https://showtimes-crawler.onrender.com
+- **GitHub:** https://github.com/temesgen5335/showtimes-crawler
+- **Images:** `showtimes-crawler-1.png` – `showtimes-crawler-3.png`
+
+### 17. LOHA Advertising PLC
+Trilingual marketing site for an Ethiopian supplier in Sebeta running three lines of business — printing and signage, trucked well water, and building blocks. Served in English, Amharic, and Afan Oromo from one typed dictionary under a `[locale]` route segment, so TypeScript fails the build on any half-translated locale. Filterable work gallery of real workshop photography, a quote form that hands off to the customer's mail client, and an embedded map — no backend to maintain.
+- **Stack:** Next.js 16, React 19, TypeScript, Tailwind v4, Vercel
+- **Live:** https://loha-plc-website.vercel.app
+- **GitHub:** https://github.com/temesgen5335/loha.plc.website
+- **Images:** `loha-advertising-1.png` – `loha-advertising-4.png`
+
 ---
 
 ## Achievements (headline numbers)

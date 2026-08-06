@@ -1,5 +1,6 @@
 ---
 import Base from "@/layouts/Base.astro";
+import Gallery from "@/components/Gallery.astro";
 import { getCollection, render } from "astro:content";
 
 export const prerender = true;
@@ -12,6 +13,9 @@ export async function getStaticPaths() {
 const { entry } = Astro.props;
 const { Content } = await render(entry);
 const d = entry.data;
+
+// Show every shot we have. Projects with a cover but no gallery still get a preview.
+const shots = d.gallery.length > 0 ? d.gallery : d.cover ? [d.cover] : [];
 ---
 <Base title={d.title} description={d.summary}>
   <a href="/projects" class="mono" style="font-size: 0.78rem; color: var(--color-muted);">← all projects</a>
@@ -40,16 +44,5 @@ const d = entry.data;
     <Content />
   </article>
 
-  {d.gallery.length > 0 && (
-    <section style="margin-top: 2.5rem;">
-      <h2 style="font-size: 0.85rem; color: var(--color-muted); margin: 0 0 1rem;">// gallery</h2>
-      <div style="display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr));">
-        {d.gallery.map((src) => (
-          <div style="border: 1px solid var(--color-border); border-radius: 0.4rem; overflow: hidden; background: var(--color-bg);">
-            <img src={src} alt={d.title} style="width: 100%; height: auto; display: block;" loading="lazy" />
-          </div>
-        ))}
-      </div>
-    </section>
-  )}
+  <Gallery images={shots} title={d.title} />
 </Base>

@@ -1,0 +1,313 @@
+---
+/**
+ * Thumbnail grid + fullscreen lightbox.
+ *
+ * Progressive enhancement: every thumb is a real <a href> to the image, so with JS off
+ * (or before hydration) clicking still opens the asset in a new tab. The script upgrades
+ * that click into a native <dialog> preview — free ESC handling, focus trap, and ::backdrop.
+ *
+ * Screenshots here are dense full-page captures where the text matters, so the lightbox
+ * also toggles between fit-to-viewport and 1:1 pan/scroll.
+ */
+interface Props {
+  images: string[];
+  title: string;
+  label?: string;
+}
+const { images, title, label = "// gallery" } = Astro.props;
+const multiple = images.length > 1;
+---
+{images.length > 0 && (
+  <section data-gallery style="margin-top: 2.5rem;">
+    <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; margin-bottom: 1rem;">
+      <h2 style="font-size: 0.85rem; color: var(--color-muted); margin: 0;">{label}</h2>
+      <span class="mono" data-gallery-hint style="font-size: 0.7rem; color: var(--color-muted);">
+        click to expand ⤢
+      </span>
+    </div>
+
+    <div style="display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr));">
+      {images.map((src, i) => (
+        <a
+          href={src}
+          data-gallery-item
+          data-index={i}
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label={`View screenshot ${i + 1} of ${images.length} full screen`}
+          style="position: relative; display: block; border: 1px solid var(--color-border); border-radius: 0.4rem; overflow: hidden; background: var(--color-bg);"
+        >
+          <img
+            src={src}
+            alt={`${title} — screenshot ${i + 1} of ${images.length}`}
+            style="width: 100%; height: auto; display: block;"
+            loading="lazy"
+            decoding="async"
+          />
+          <span data-gallery-expand class="mono" aria-hidden="true">⤢</span>
+        </a>
+      ))}
+    </div>
+
+    <dialog data-gallery-dialog aria-label={`${title} — screenshot viewer`}>
+      <div data-gallery-bar>
+        <span class="mono" data-gallery-counter style="color: var(--color-muted); font-size: 0.72rem;"></span>
+        <span class="mono" data-gallery-keys style="color: var(--color-muted); font-size: 0.68rem;">
+          {multiple ? "click image to zoom · ← → browse · esc to close" : "click image to zoom · esc to close"}
+        </span>
+        <button type="button" class="btn" data-gallery-close style="padding: 0.35rem 0.7rem; font-size: 0.75rem;">
+          close ✕
+        </button>
+      </div>
+
+      <div data-gallery-stage>
+        <img data-gallery-img alt="" decoding="async" />
+      </div>
+
+      {multiple && (
+        <>
+          <button type="button" class="btn" data-gallery-prev data-gallery-nav aria-label="Previous screenshot">←</button>
+          <button type="button" class="btn" data-gallery-next data-gallery-nav aria-label="Next screenshot">→</button>
+        </>
+      )}
+    </dialog>
+  </section>
+)}
+
+<style>
+  /* --- thumbnails --- */
+  [data-gallery] [data-gallery-item] {
+    transition: border-color 150ms ease;
+  }
+  [data-gallery] [data-gallery-item]:hover,
+  [data-gallery] [data-gallery-item]:focus-visible {
+    border-color: var(--color-accent);
+  }
+  /* Expand affordance — only meaningful once the script has taken over the click. */
+  [data-gallery] [data-gallery-expand] {
+    position: absolute;
+    inset-block-end: 0.5rem;
+    inset-inline-end: 0.5rem;
+    display: none;
+    padding: 0.15rem 0.4rem;
+    font-size: 0.78rem;
+    line-height: 1.2;
+    color: var(--color-text-strong);
+    background: rgba(10, 10, 10, 0.78);
+    border: 1px solid var(--color-border);
+    border-radius: 0.25rem;
+    opacity: 0;
+    transition: opacity 150ms ease;
+  }
+  [data-gallery].js [data-gallery-expand] {
+    display: block;
+  }
+  [data-gallery].js [data-gallery-item]:hover [data-gallery-expand],
+  [data-gallery].js [data-gallery-item]:focus-visible [data-gallery-expand] {
+    opacity: 1;
+  }
+  /* The hint describes a JS-only affordance, so it stays hidden until the script lands. */
+  [data-gallery] [data-gallery-hint] {
+    display: none;
+  }
+  [data-gallery].js [data-gallery-hint] {
+    display: inline;
+  }
+
+  /* --- lightbox shell --- */
+  dialog[data-gallery-dialog] {
+    inset: 0;
+    width: 100%;
+    max-width: 100%;
+    height: 100%;
+    max-height: 100%;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: var(--color-text);
+    overflow: hidden;
+  }
+  dialog[data-gallery-dialog][open] {
+    display: flex;
+    flex-direction: column;
+  }
+  dialog[data-gallery-dialog]::backdrop {
+    background: rgba(6, 6, 6, 0.9);
+    backdrop-filter: blur(5px);
+  }
+
+  [data-gallery-bar] {
+    flex: none;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.7rem 1rem;
+    background: var(--color-bg);
+    border-block-end: 1px solid var(--color-border);
+  }
+  [data-gallery-keys] {
+    /* middle column is a nicety — first thing to go when there's no room */
+    display: none;
+  }
+
+  [data-gallery-stage] {
+    flex: 1 1 auto;
+    display: grid;
+    place-items: center;
+    min-height: 0;
+    padding: 1rem;
+    overflow: hidden;
+  }
+  [data-gallery-stage] img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    border: 1px solid var(--color-border);
+    border-radius: 0.4rem;
+    cursor: zoom-in;
+  }
+  /* 1:1 mode — the screenshots are ~3000px wide, so reading them means panning. */
+  [data-gallery-stage].is-zoomed {
+    place-items: start;
+    overflow: auto;
+    overscroll-behavior: contain;
+  }
+  [data-gallery-stage].is-zoomed img {
+    max-width: none;
+    max-height: none;
+    width: auto;
+    cursor: zoom-out;
+  }
+
+  [data-gallery-nav] {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 1;
+    padding: 0.55rem 0.8rem;
+    font-size: 1rem;
+    background: rgba(17, 17, 17, 0.92);
+  }
+  [data-gallery-prev] { inset-inline-start: 0.75rem; }
+  [data-gallery-next] { inset-inline-end: 0.75rem; }
+
+  @media (min-width: 48rem) {
+    [data-gallery-keys] { display: inline; }
+    [data-gallery-stage] { padding: 1.5rem 4.5rem; }
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    dialog[data-gallery-dialog][open] { animation: gallery-rise 160ms ease-out; }
+    dialog[data-gallery-dialog][open]::backdrop { animation: gallery-fade 160ms ease-out; }
+  }
+  @keyframes gallery-fade {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+  }
+  @keyframes gallery-rise {
+    from { opacity: 0; transform: translateY(6px); }
+    to   { opacity: 1; transform: none; }
+  }
+</style>
+
+<script>
+  // SSR-safe: the grid above is fully usable without this block — every thumb is a plain link.
+  (() => {
+    const roots = document.querySelectorAll<HTMLElement>("[data-gallery]");
+
+    roots.forEach((root) => {
+      const dialog = root.querySelector<HTMLDialogElement>("[data-gallery-dialog]");
+      const stage = root.querySelector<HTMLElement>("[data-gallery-stage]");
+      const img = root.querySelector<HTMLImageElement>("[data-gallery-img]");
+      const counter = root.querySelector<HTMLElement>("[data-gallery-counter]");
+      const closeBtn = root.querySelector<HTMLButtonElement>("[data-gallery-close]");
+      const prevBtn = root.querySelector<HTMLButtonElement>("[data-gallery-prev]");
+      const nextBtn = root.querySelector<HTMLButtonElement>("[data-gallery-next]");
+      const items = Array.from(root.querySelectorAll<HTMLAnchorElement>("[data-gallery-item]"));
+
+      // Bail quietly if the markup isn't what we expect — the links keep working.
+      if (!dialog || !stage || !img || !items.length) return;
+      if (typeof dialog.showModal !== "function") return;
+
+      root.classList.add("js");
+
+      const sources = items.map((a) => a.getAttribute("href") ?? "");
+      const alts = items.map((a) => a.querySelector("img")?.getAttribute("alt") ?? "");
+      const pad = (n: number) => String(n).padStart(2, "0");
+      let index = 0;
+      let opener: HTMLElement | null = null;
+      let scrollLock = "";
+
+      const setZoom = (on: boolean) => {
+        stage.classList.toggle("is-zoomed", on);
+        if (!on) stage.scrollTo(0, 0);
+      };
+
+      // Warm the neighbours so ← / → swaps instantly instead of popping. Thumbs are lazy-loaded,
+      // so an off-screen shot may not be in cache yet even though it's the same URL.
+      const preload = (i: number) => {
+        const src = sources[(i + sources.length) % sources.length];
+        if (src) new Image().src = src;
+      };
+
+      const show = (i: number) => {
+        index = (i + sources.length) % sources.length;
+        img.src = sources[index];
+        img.alt = alts[index];
+        if (counter) counter.textContent = `${pad(index + 1)} / ${pad(sources.length)}`;
+        setZoom(false); // every navigation lands fit-to-viewport
+        if (sources.length > 1) { preload(index + 1); preload(index - 1); }
+      };
+
+      const open = (i: number, from: HTMLElement) => {
+        opener = from;
+        show(i);
+        // showModal() alone doesn't stop the page behind from scrolling in every browser.
+        scrollLock = document.body.style.overflow;
+        document.body.style.overflow = "hidden";
+        dialog.showModal();
+        closeBtn?.focus();
+      };
+
+      items.forEach((a, i) => {
+        a.addEventListener("click", (e) => {
+          // Let modified clicks and middle-clicks do the native thing (open the raw asset).
+          if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) return;
+          e.preventDefault();
+          open(i, a);
+        });
+      });
+
+      // Native ESC also routes through this, so scroll + focus restore live in one place.
+      dialog.addEventListener("close", () => {
+        document.body.style.overflow = scrollLock;
+        img.removeAttribute("src");
+        setZoom(false);
+        opener?.focus();
+        opener = null;
+      });
+
+      closeBtn?.addEventListener("click", () => dialog.close());
+      prevBtn?.addEventListener("click", () => show(index - 1));
+      nextBtn?.addEventListener("click", () => show(index + 1));
+      img.addEventListener("click", () => setZoom(!stage.classList.contains("is-zoomed")));
+
+      // Click the empty space around the image to dismiss. The dialog fills the viewport,
+      // so any such click lands on the dialog or the stage itself, never a child.
+      dialog.addEventListener("click", (e) => {
+        if (e.target === dialog || e.target === stage) dialog.close();
+      });
+
+      // Bound to the document rather than the dialog: clicking the (non-focusable) image can
+      // leave focus outside the dialog subtree, and arrow keys should still browse.
+      // ESC stays with the browser's native dialog handling.
+      document.addEventListener("keydown", (e) => {
+        if (!dialog.open || sources.length < 2) return;
+        if (e.key === "ArrowRight") { e.preventDefault(); show(index + 1); }
+        else if (e.key === "ArrowLeft") { e.preventDefault(); show(index - 1); }
+      });
+    });
+  })();
+</script>
