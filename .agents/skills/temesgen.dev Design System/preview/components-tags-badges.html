@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=700">
+<title>Components — Tags & Badges</title>
+<link rel="stylesheet" href="../colors_and_type.css">
+<style>
+html,body{margin:0;background:var(--color-bg);color:var(--fg-2);font-family:var(--font-sans);}
+.card{padding:22px 28px;display:flex;flex-direction:column;gap:14px;}
+.spec{font-family:var(--font-mono);font-size:10px;color:var(--fg-3);}
+.tag{display:inline-flex;align-items:center;padding:2px 8px;font-family:var(--font-mono);font-size:11.5px;color:var(--fg-3);border:1px solid var(--color-border);border-radius:4px;}
+.row{display:flex;flex-wrap:wrap;gap:5.6px;}
+.mono-badge{font-family:var(--font-mono);font-size:12.5px;color:var(--fg-3);}
+.section-label{font-family:var(--font-mono);font-size:15.2px;color:var(--fg-3);letter-spacing:-.02em;font-weight:500;}
+.dot{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--color-accent);margin-right:6px;vertical-align:1px;}
+</style></head>
+<body class="tg-html"><div class="card">
+  <div><div class="spec" style="margin-bottom:6px">tag chip · stack tokens</div>
+    <div class="row"><span class="tag">FastAPI</span><span class="tag">LangChain</span><span class="tag">PostgreSQL</span><span class="tag">Weaviate</span><span class="tag">Docker</span><span class="tag">Airflow</span></div>
+  </div>
+  <div><div class="spec" style="margin-bottom:6px">mono badge · with ~ prefix</div>
+    <div class="mono-badge">~ addis ababa, ethiopia · available for senior ai roles + freelance</div>
+  </div>
+  <div><div class="spec" style="margin-bottom:6px">availability badge · with pulsing dot</div>
+    <div class="mono-badge"><span class="dot"></span>available for senior ai roles + freelance</div>
+  </div>
+  <div><div class="spec" style="margin-bottom:6px">section label · // prefix</div>
+    <div class="section-label">// featured work</div>
+  </div>
+</div></body></html>

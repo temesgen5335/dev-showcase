@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=700">
+<title>Components — Project Card</title>
+<link rel="stylesheet" href="../colors_and_type.css">
+<style>
+html,body{margin:0;background:var(--color-bg);color:var(--fg-2);font-family:var(--font-sans);}
+.wrap{padding:18px 22px;display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.card{border:1px solid var(--color-border);border-radius:8px;background:var(--color-surface);padding:16px 18px;}
+.cover{aspect-ratio:16/9;border-radius:6px;overflow:hidden;border:1px solid var(--color-border);background:var(--color-bg);margin-bottom:12px;}
+.cover img{width:100%;height:100%;object-fit:cover;display:block;}
+.head{display:flex;justify-content:space-between;align-items:baseline;gap:8px;margin-bottom:6px;}
+.title{margin:0;font-size:14.5px;font-family:var(--font-mono);color:var(--fg-1);letter-spacing:-.02em;font-weight:500;}
+.meta{font-family:var(--font-mono);font-size:10.5px;color:var(--fg-3);display:flex;gap:8px;}
+.summary{margin:0 0 10px;color:var(--fg-2);font-size:13px;line-height:1.55;}
+.tags{display:flex;flex-wrap:wrap;gap:5px;}
+.tag{font-family:var(--font-mono);font-size:10.5px;color:var(--fg-3);border:1px solid var(--color-border);border-radius:4px;padding:1px 6px;}
+</style></head>
+<body class="tg-html"><div class="wrap">
+  <a class="card">
+    <div class="cover"><img src="../assets/projects/chronos1.png" alt=""></div>
+    <div class="head"><h3 class="title">Chronos Finance</h3><div class="meta"><span>live ↗</span><span>repo ↗</span></div></div>
+    <p class="summary">AI-powered personal finance super-app with biometric-first security and intelligent automation.</p>
+    <div class="tags"><span class="tag">Fintech</span><span class="tag">AI Agents</span><span class="tag">NLP</span></div>
+  </a>
+  <a class="card">
+    <div class="cover"><img src="../assets/projects/solveit1.png" alt=""></div>
+    <div class="head"><h3 class="title">SolveIT</h3><div class="meta"><span>live ↗</span></div></div>
+    <p class="summary">Multilingual NLP voice/text customer support with contextual document Q&A. Supports 50+ languages.</p>
+    <div class="tags"><span class="tag">NLP</span><span class="tag">LLMs</span><span class="tag">Voice</span></div>
+  </a>
+</div></body></html>

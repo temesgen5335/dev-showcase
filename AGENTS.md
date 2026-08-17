@@ -1,4 +1,4 @@
-# CLAUDE.md — temesgen.dev
+# AGENTS.md — temesgen.dev
 
 Personal portfolio site for **Temesgen Gebreabzgi** (AI Software Engineer). This file is the durable context for any agent/session — read it first, keep it current.
 
@@ -25,7 +25,7 @@ If a change doesn't fit any existing section, add a new one. If a section become
 > ```
 > This drift is not hypothetical: `AGENTS.md` was once 56 lines behind and contained **none** of a session's documented work. `wc -l CLAUDE.md AGENTS.md` should always match. If maintaining two copies stops being worth it, collapse one into a one-line pointer at the other rather than letting them diverge.
 
-The companion `portfolio-info.md` at the root is the **content** source of truth (bio, projects, CV) and is also fed into the chatbot's system prompt at runtime. Keep CLAUDE.md for the *code/architecture* truth; keep `portfolio-info.md` for the *résumé/bio* truth. They serve different consumers.
+The companion `portfolio-info.md` at the root is the **content** source of truth (bio, projects, CV) and is also fed into the chatbot's system prompt at runtime. Keep AGENTS.md for the *code/architecture* truth; keep `portfolio-info.md` for the *résumé/bio* truth. They serve different consumers.
 
 ---
 
@@ -55,7 +55,7 @@ Path alias: `@/*` → `src/*` (configured in `tsconfig.json`).
 
 ```
 temesgen.dev/
-├── CLAUDE.md                 ← you are here
+├── AGENTS.md                 ← you are here
 ├── portfolio-info.md         ← canonical bio + injected into chatbot system prompt
 ├── HERO_PROMPT.md            ← scratch notes for the hero design (gitignored)
 ├── astro.config.mjs          ← static output, hover prefetch, Vercel adapter, mdx + react + tailwind
@@ -143,7 +143,7 @@ Used by `src/pages/projects/[...slug].astro` for the `// gallery` block. Props: 
 - Fonts are **self-hosted**, not loaded from Google's CDN: **Inter** (sans) + **IBM Plex Mono** (mono), declared in `astro.config.mjs` under `experimental.fonts` (still experimental as of Astro 5.18) and rendered by two `<Font cssVariable="…" preload />` tags in the `Base.astro` head. Astro downloads and subsets them at build and serves them from `/_astro/fonts/`, so there's no third-party round trip before first paint. Headings use mono; body uses sans. Section labels follow the `// section` mono-muted pattern.
   - `--font-sans` / `--font-mono` in `@theme` point at the `--font-inter` / `--font-ibm-plex-mono` variables the `<Font>` component emits. **Adding a family means all three steps** — config entry, `<Font>` tag in `Base.astro`, and the `@theme` token — or the token resolves to nothing.
   - Each family sets `fallbacks` explicitly. IBM Plex Mono's **must stay monospace**: Astro's default fallback chain is `sans-serif` metric-matched against Arial, which would swap every mono heading into a proportional face while the font loads.
-- A more complete design language (palette, type scale, voice, UI kit previews) lives in the `.claude/skills/temesgen.dev Design System/` skill — invoke it via the Skill tool when generating new UI or brand-aligned mocks.
+- A more complete design language (palette, type scale, voice, UI kit previews) lives in the `.agents/skills/temesgen.dev Design System/` (mirrored at `.claude/skills/` for Claude Code) skill — invoke it via the Skill tool when generating new UI or brand-aligned mocks.
 
 ### Content
 

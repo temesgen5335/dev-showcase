@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=700">
+<title>Components — Buttons</title>
+<link rel="stylesheet" href="../colors_and_type.css">
+<style>
+html,body{margin:0;background:var(--color-bg);color:var(--fg-2);font-family:var(--font-sans);}
+.card{padding:24px 28px;display:flex;flex-direction:column;gap:14px;}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap;}
+.spec{font-family:var(--font-mono);font-size:10px;color:var(--fg-3);width:100px;flex-shrink:0;}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:9.6px 16px;font-family:var(--font-mono);font-size:13.6px;border:1px solid var(--color-border);border-radius:6px;color:var(--fg-1);background:var(--color-surface);cursor:pointer;}
+.btn-primary{background:var(--fg-1);color:#000;border-color:var(--fg-1);}
+.btn-hover{border-color:var(--color-border-hover);background:var(--color-surface-2);}
+.btn-primary-hover{background:var(--color-text);}
+</style></head>
+<body class="tg-html"><div class="card">
+  <div class="row"><div class="spec">primary</div><button class="btn btn-primary">view experience →</button><button class="btn btn-primary btn-primary-hover">view experience →</button></div>
+  <div class="row"><div class="spec">secondary</div><button class="btn">download cv</button><button class="btn btn-hover">download cv</button></div>
+  <div class="row"><div class="spec">trio (hero)</div><button class="btn btn-primary">view experience →</button><button class="btn">download cv</button><button class="btn">get in touch</button></div>
+</div></body></html>
