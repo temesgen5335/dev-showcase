@@ -3,6 +3,7 @@ import "@/styles/global.css";
 import Nav from "@/components/Nav.astro";
 import Footer from "@/components/Footer.astro";
 import ChatWidget from "@/components/ChatWidget.tsx";
+import { Font } from "astro:assets";
 import { site } from "@/data/site";
 
 interface Props {
@@ -27,12 +28,10 @@ const pageDesc = description ?? site.description;
     <meta property="og:image" content="/avatar.jpg" />
     <meta name="twitter:card" content="summary_large_image" />
     <link rel="icon" type="image/jpeg" href="/avatar.jpg" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600&display=swap"
-      rel="stylesheet"
-    />
+    {/* Self-hosted (see `experimental.fonts` in astro.config.mjs) — emits @font-face inline
+        plus a preload for each family, so there's no third-party round trip before first paint. */}
+    <Font cssVariable="--font-inter" preload />
+    <Font cssVariable="--font-ibm-plex-mono" preload />
     <title>{pageTitle}</title>
   </head>
   <body>

@@ -1,10 +1,12 @@
 ---
+import { Image } from "astro:assets";
+
 interface Props {
   title: string;
   summary: string;
   tags: string[];
   href: string;
-  cover?: string;
+  cover?: ImageMetadata;
   liveUrl?: string;
   githubUrl?: string;
 }
@@ -13,7 +15,21 @@ const { title, summary, tags, href, cover, liveUrl, githubUrl } = Astro.props;
 <a class="card" href={href} style="display: block; padding: 1.1rem 1.25rem; text-decoration: none; color: inherit;">
   {cover && (
     <div style="aspect-ratio: 16/9; border-radius: 0.4rem; overflow: hidden; margin-bottom: 0.9rem; border: 1px solid var(--color-border); background: var(--color-bg);">
-      <img src={cover} alt={title} style="width: 100%; height: 100%; object-fit: cover; display: block;" loading="lazy" />
+      {/* Cards render at ~1 / 2 / 3 columns, so cap at 800w — the source is ~3000px wide.
+          `width` also caps the plain `src` fallback, which Astro would otherwise emit at
+          full resolution. Covers never need more than the card, unlike gallery shots. */}
+      <Image
+        src={cover}
+        alt={title}
+        width={800}
+        widths={[400, 800]}
+        sizes="(min-width: 60rem) 22rem, (min-width: 40rem) 45vw, 92vw"
+        format="webp"
+        quality={80}
+        style="width: 100%; height: 100%; object-fit: cover; display: block;"
+        loading="lazy"
+        decoding="async"
+      />
     </div>
   )}
   <div style="display: flex; justify-content: space-between; align-items: baseline; gap: 0.5rem; margin-bottom: 0.4rem;">

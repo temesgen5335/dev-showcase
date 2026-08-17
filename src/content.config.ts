@@ -4,19 +4,23 @@ import { mediumLoader } from "@/loaders/medium";
 
 const projects = defineCollection({
   loader: glob({ pattern: "**/*.mdx", base: "./src/content/projects" }),
-  schema: z.object({
-    title: z.string(),
-    summary: z.string(),
-    tags: z.array(z.string()).default([]),
-    stack: z.array(z.string()).default([]),
-    githubUrl: z.string().url().optional(),
-    liveUrl: z.string().url().optional(),
-    cover: z.string().optional(),
-    gallery: z.array(z.string()).default([]),
-    featured: z.boolean().default(false),
-    order: z.number().default(100),
-    impact: z.array(z.string()).default([]),
-  }),
+  // `image()` resolves the frontmatter path against the MDX file and hands back
+  // ImageMetadata, so `astro:assets` can emit responsive WebP at build time.
+  // Paths are therefore relative — "../../assets/projects/<file>", not "/projects/<file>".
+  schema: ({ image }) =>
+    z.object({
+      title: z.string(),
+      summary: z.string(),
+      tags: z.array(z.string()).default([]),
+      stack: z.array(z.string()).default([]),
+      githubUrl: z.string().url().optional(),
+      liveUrl: z.string().url().optional(),
+      cover: image().optional(),
+      gallery: z.array(image()).default([]),
+      featured: z.boolean().default(false),
+      order: z.number().default(100),
+      impact: z.array(z.string()).default([]),
+    }),
 });
 
 const experience = defineCollection({

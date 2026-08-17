@@ -1,8 +1,10 @@
 @import "tailwindcss";
 
 @theme {
-  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
-  --font-mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  /* --font-inter / --font-ibm-plex-mono are emitted by Astro's <Font> component
+     (configured in astro.config.mjs `experimental.fonts`), which self-hosts both families. */
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-ibm-plex-mono), ui-monospace, SFMono-Regular, Menlo, monospace;
 
   --color-bg: #0a0a0a;
   --color-surface: #111111;

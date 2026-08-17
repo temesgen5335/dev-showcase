@@ -8,14 +8,27 @@
  *
  * Screenshots here are dense full-page captures where the text matters, so the lightbox
  * also toggles between fit-to-viewport and 1:1 pan/scroll.
+ *
+ * Two derivatives per image, which is the whole point of taking ImageMetadata rather than
+ * a URL string: the grid gets a ~400-800w thumbnail, and the lightbox gets a full-resolution
+ * WebP (the 1:1 mode exists to read the text, so it must stay full-width — WebP takes those
+ * ~3000px captures from multi-MB PNG to ~150-250KB). The <a href> points at the full-size
+ * derivative, so the lightbox script keeps reading its sources straight off the DOM and the
+ * no-JS fallback opens an optimized file instead of a 4.7MB original.
  */
+import { Image, getImage } from "astro:assets";
+
 interface Props {
-  images: string[];
+  images: ImageMetadata[];
   title: string;
   label?: string;
 }
 const { images, title, label = "// gallery" } = Astro.props;
 const multiple = images.length > 1;
+
+const full = await Promise.all(
+  images.map((src) => getImage({ src, format: "webp", quality: 82 })),
+);
 ---
 {images.length > 0 && (
   <section data-gallery style="margin-top: 2.5rem;">
@@ -29,7 +42,7 @@ const multiple = images.length > 1;
     <div style="display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr));">
       {images.map((src, i) => (
         <a
-          href={src}
+          href={full[i].src}
           data-gallery-item
           data-index={i}
           target="_blank"
@@ -37,9 +50,17 @@ const multiple = images.length > 1;
           aria-label={`View screenshot ${i + 1} of ${images.length} full screen`}
           style="position: relative; display: block; border: 1px solid var(--color-border); border-radius: 0.4rem; overflow: hidden; background: var(--color-bg);"
         >
-          <img
+          {/* `width` caps the plain `src` fallback at 800w. Without it Astro emits a
+              full-resolution file there, duplicating the lightbox derivative for no gain —
+              srcset-aware browsers never fetch `src` anyway. */}
+          <Image
             src={src}
             alt={`${title} — screenshot ${i + 1} of ${images.length}`}
+            width={800}
+            widths={[400, 800]}
+            sizes="(min-width: 60rem) 30rem, (min-width: 40rem) 45vw, 92vw"
+            format="webp"
+            quality={80}
             style="width: 100%; height: auto; display: block;"
             loading="lazy"
             decoding="async"
