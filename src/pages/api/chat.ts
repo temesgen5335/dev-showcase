@@ -27,7 +27,10 @@ export const POST: APIRoute = async ({ request }) => {
   }
   const parsed = BodySchema.safeParse(json);
   if (!parsed.success) {
-    return new Response(JSON.stringify(parsed.error.flatten()), { status: 400 });
+    // The widget renders the body text straight into a chat bubble, so this has to read like a
+    // sentence — it used to echo raw Zod JSON at the visitor. Detail stays in the server log.
+    console.warn("[api/chat] rejected body", JSON.stringify(parsed.error.flatten()));
+    return new Response("That message couldn't be sent. Please try again.", { status: 400 });
   }
 
   try {

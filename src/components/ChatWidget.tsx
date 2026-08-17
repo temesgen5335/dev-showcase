@@ -1,6 +1,23 @@
 import { useEffect, useRef, useState } from "react";
 
-type Msg = { role: "user" | "assistant"; content: string };
+// `error: true` marks a UI-only failure bubble (⚠️ …). It renders like an assistant turn but
+// is never sent to the API or persisted — it isn't part of the conversation, and feeding it
+// back would put our own error copy into the model's context.
+type Msg = { role: "user" | "assistant"; content: string; error?: true };
+
+/**
+ * The messages that count as real conversation: non-empty, non-error.
+ *
+ * `send()` parks an empty assistant placeholder in state to drive the "…" indicator, and the
+ * persist effect runs on every state change — so without this filter that placeholder reaches
+ * both localStorage and the request body. The API requires `content` to be 1..4000 chars, so a
+ * single stored empty message makes every later request fail validation until storage is
+ * cleared. That's a permanent wedge for the visitor, so it's filtered at all three boundaries:
+ * load, persist, and send.
+ */
+function conversational(messages: Msg[]): Msg[] {
+  return messages.filter((m) => !m.error && m.content.trim().length > 0);
+}
 
 const GREETING: Msg = {
   role: "assistant",
@@ -39,7 +56,12 @@ function loadStoredChat(): Msg[] | null {
         typeof (m as Msg).content === "string" &&
         ((m as Msg).role === "user" || (m as Msg).role === "assistant"),
     );
-    return valid ? (parsed.messages as Msg[]) : null;
+    if (!valid) return null;
+    // Strip rather than reject: this self-heals storage already holding an empty or error
+    // message from a stream that died mid-flight, instead of stranding the visitor with a
+    // chat that 400s on every send. Good history survives.
+    const clean = conversational(parsed.messages as Msg[]);
+    return clean.length > 0 ? clean : null;
   } catch {
     return null;
   }
@@ -48,11 +70,14 @@ function loadStoredChat(): Msg[] | null {
 function persistChat(messages: Msg[]) {
   if (typeof window === "undefined") return;
   try {
-    if (messages.length <= 1) {
+    // Never write the in-flight placeholder or an error bubble — if the tab closes mid-stream
+    // that empty message would otherwise be what we reload next visit.
+    const clean = conversational(messages);
+    if (clean.length <= 1) {
       window.localStorage.removeItem(STORAGE_KEY);
       return;
     }
-    const data: StoredChat = { messages, expiresAt: Date.now() + TTL_MS };
+    const data: StoredChat = { messages: clean, expiresAt: Date.now() + TTL_MS };
     window.localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
   } catch {
     /* quota exceeded / private mode — silently skip */
@@ -115,7 +140,9 @@ export default function ChatWidget() {
         method: "POST",
         headers: { "content-type": "application/json" },
         body: JSON.stringify({
-          messages: next.map((m) => ({ role: m.role, content: m.content })),
+          // Only real turns. The API rejects any message with empty content, so an
+          // unsent-placeholder or error bubble left in state would 400 the whole request.
+          messages: conversational(next).map((m) => ({ role: m.role, content: m.content })),
         }),
         signal: ctrl.signal,
       });
@@ -123,7 +150,7 @@ export default function ChatWidget() {
         const errText = await res.text().catch(() => "Chat failed");
         setMessages((prev) => {
           const copy = [...prev];
-          copy[copy.length - 1] = { role: "assistant", content: `⚠️ ${errText}` };
+          copy[copy.length - 1] = { role: "assistant", content: `⚠️ ${errText}`, error: true };
           return copy;
         });
         return;
@@ -141,6 +168,19 @@ export default function ChatWidget() {
           return copy;
         });
       }
+      // A 200 whose body yields nothing — provider died after the headers went out, or the
+      // dev server restarted mid-stream. Without this the placeholder just stays blank.
+      if (!acc.trim()) {
+        setMessages((prev) => {
+          const copy = [...prev];
+          copy[copy.length - 1] = {
+            role: "assistant",
+            content: "⚠️ The assistant returned an empty response. Please try again.",
+            error: true,
+          };
+          return copy;
+        });
+      }
     } catch (e) {
       if ((e as Error).name !== "AbortError") {
         setMessages((prev) => {
@@ -148,6 +188,7 @@ export default function ChatWidget() {
           copy[copy.length - 1] = {
             role: "assistant",
             content: "⚠️ Couldn't reach the chat service.",
+            error: true,
           };
           return copy;
         });
