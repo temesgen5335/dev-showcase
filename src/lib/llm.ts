@@ -97,6 +97,83 @@ function buildModel(name: ProviderName, apiKey: string, modelId: string) {
   }
 }
 
+/**
+ * Reasoning models leak their chain of thought as inline `<think>` text.
+ *
+ * gpt-oss on Groq usually emits reasoning as a separate stream part (which we already ignore,
+ * forwarding only `text-delta`), but *intermittently* it writes the reasoning into the text
+ * channel wrapped in `<think>`. Observed in the wild answering a prompt-injection attempt, where
+ * the leaked reasoning quoted the attack and discussed the rules — so this is a prompt-extraction
+ * vector, not just a cosmetic glitch. It is sampling-dependent: the same input can leak once and
+ * be clean on retry, so it cannot be left to the model or verified away by a single test.
+ *
+ * Strips paired reasoning blocks from a streamed text sequence, holding back partial tags at chunk
+ * boundaries so `<thi` + `nk>` split across two deltas is still caught. An unterminated block is
+ * dropped at flush — better a truncated answer than a leaked prompt.
+ */
+const REASONING_TAGS = [
+  { open: "<think>", close: "</think>" },
+  { open: "<thinking>", close: "</thinking>" },
+] as const;
+
+function longestPartialSuffix(s: string, target: string): number {
+  for (let n = Math.min(s.length, target.length - 1); n > 0; n--) {
+    if (target.startsWith(s.slice(s.length - n))) return n;
+  }
+  return 0;
+}
+
+export function createReasoningStripper() {
+  let buf = "";
+  let closing: string | null = null;
+
+  return {
+    push(chunk: string): string {
+      buf += chunk;
+      let out = "";
+      for (;;) {
+        if (closing) {
+          const i = buf.indexOf(closing);
+          if (i !== -1) {
+            buf = buf.slice(i + closing.length);
+            closing = null;
+            continue;
+          }
+          buf = buf.slice(buf.length - longestPartialSuffix(buf, closing));
+          return out;
+        }
+        let at = -1;
+        let found: (typeof REASONING_TAGS)[number] | null = null;
+        for (const t of REASONING_TAGS) {
+          const i = buf.indexOf(t.open);
+          if (i !== -1 && (at === -1 || i < at)) {
+            at = i;
+            found = t;
+          }
+        }
+        if (found && at !== -1) {
+          out += buf.slice(0, at);
+          buf = buf.slice(at + found.open.length);
+          closing = found.close;
+          continue;
+        }
+        let hold = 0;
+        for (const t of REASONING_TAGS) hold = Math.max(hold, longestPartialSuffix(buf, t.open));
+        out += buf.slice(0, buf.length - hold);
+        buf = buf.slice(buf.length - hold);
+        return out;
+      }
+    },
+    /** Held-back tail at end of stream; an unclosed reasoning block is discarded. */
+    flush(): string {
+      const rest = closing ? "" : buf;
+      buf = "";
+      closing = null;
+      return rest;
+    },
+  };
+}
+
 type Candidate = {
   name: ProviderName;
   modelId: string;
@@ -183,10 +260,18 @@ export async function chatStream({
 
       const opening = firstText;
       const encoder = new TextEncoder();
+      // Health check above used the raw first text; visitors only ever see stripped output.
+      const strip = createReasoningStripper();
       const stream = new ReadableStream<Uint8Array>({
         async start(controller) {
           try {
-            controller.enqueue(encoder.encode(opening));
+            let rawChars = opening.length;
+            let sentChars = 0;
+            const head = strip.push(opening);
+            if (head) {
+              sentChars += head.length;
+              controller.enqueue(encoder.encode(head));
+            }
             while (true) {
               const { done, value } = await committed.read();
               if (done) break;
@@ -194,8 +279,26 @@ export async function chatStream({
               // client show its error bubble rather than truncating silently.
               if (value.type === "error") throw value.error;
               if (value.type === "text-delta" && value.text) {
-                controller.enqueue(encoder.encode(value.text));
+                rawChars += value.text.length;
+                const safe = strip.push(value.text);
+                if (safe) {
+                  sentChars += safe.length;
+                  controller.enqueue(encoder.encode(safe));
+                }
               }
+            }
+            const tail = strip.flush();
+            if (tail) {
+              sentChars += tail.length;
+              controller.enqueue(encoder.encode(tail));
+            }
+            // An unterminated reasoning block swallows the rest of the response. That's the
+            // deliberate trade (a blank answer the client retries beats leaking the prompt), but
+            // it must be visible — silent blanking is indistinguishable from a dead provider.
+            if (sentChars === 0 && rawChars > 0) {
+              console.warn(
+                `[llm] ${c.name}/${c.modelId} produced ${rawChars} chars but all of it was reasoning — sent nothing`,
+              );
             }
             controller.close();
           } catch (err) {

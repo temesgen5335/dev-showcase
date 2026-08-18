@@ -19,6 +19,23 @@ function conversational(messages: Msg[]): Msg[] {
   return messages.filter((m) => !m.error && m.content.trim().length > 0);
 }
 
+/**
+ * The exact array sent to /api/chat.
+ *
+ * Drops leading assistant turns — our canned greeting is one, and sending it wastes tokens,
+ * hands an attacker a pre-filled assistant slot to build on, and would 400 on Anthropic, which
+ * requires the first message to be `user`. The server enforces first-and-last-are-user, so this
+ * is the client half of that contract.
+ */
+function wireMessages(messages: Msg[]): { role: Msg["role"]; content: string }[] {
+  const turns = conversational(messages);
+  const firstUser = turns.findIndex((m) => m.role === "user");
+  return (firstUser === -1 ? [] : turns.slice(firstUser)).map((m) => ({
+    role: m.role,
+    content: m.content,
+  }));
+}
+
 const GREETING: Msg = {
   role: "assistant",
   content:
@@ -140,9 +157,8 @@ export default function ChatWidget() {
         method: "POST",
         headers: { "content-type": "application/json" },
         body: JSON.stringify({
-          // Only real turns. The API rejects any message with empty content, so an
-          // unsent-placeholder or error bubble left in state would 400 the whole request.
-          messages: conversational(next).map((m) => ({ role: m.role, content: m.content })),
+          // Only real turns, starting at the first user message — see wireMessages().
+          messages: wireMessages(next),
         }),
         signal: ctrl.signal,
       });
