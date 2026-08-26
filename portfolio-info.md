@@ -274,7 +274,7 @@ Trilingual marketing site for an Ethiopian supplier in Sebeta running three line
 
 ## Assets (for the site)
 
-- CV PDF: `public/cv.pdf` (source: `TemesgenGebreabzgi-AI-CV.pdf`)
+- CV PDF: `public/cv.pdf` (source: `~/Documents/work/Temesgen_Gebreabzgi_Resume.pdf` — single-page LaTeX résumé, replaced the older Word-generated CV on 2026-08-26)
 - Profile photo: `public/avatar.jpg` (source: old `public/avi2.jpg`)
 - Project screenshots: `public/projects/*` (sources: old `public/images/projects/*`)
 - CV hosted link (fallback): https://drive.google.com/file/d/1poYpGrmwtftwtR8gP8S69zJ-lTOiD7rA/view
