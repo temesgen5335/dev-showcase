@@ -240,7 +240,8 @@ The single exception is `tests/reasoning-stripper.test.mts`, and the reason it e
 ## Git & deploy
 
 - Default branch: `master`.
-- Vercel deploys on push. `.vercel/` (link metadata + build output), `dist/`, `.astro/`, `.env`, and `.claude/` are all gitignored — see `.gitignore`.
+- Vercel deploys on push. `.gitignore` covers `node_modules`, `dist/`, `.astro/`, `.vercel/` (link metadata + build output), `.env`, `.env.local`, `.DS_Store`, `*.log`, and `HERO_PROMPT.md`.
+- **`.claude/` is NOT gitignored.** `.claude/skills/` and `.agents/skills/` are both tracked and committed (32 files each). Only `.claude/settings.local.json` stays out, and it is excluded by the *user's global* ignore file (`~/.config/git/ignore`), not by this repo — so on any other machine it shows up as untracked.
 - The `dist/` directory is a leftover local build artifact and is gitignored.
 - **Refreshing Medium posts:** the Medium feed is fetched only at build time. After publishing a new post on Medium, trigger a redeploy: push an empty commit (`git commit --allow-empty -m "refresh medium feed" && git push`) or click "Redeploy" in the Vercel dashboard. Automation (deploy hook + scheduled cron) is intentionally deferred until post cadence justifies it.
 
@@ -264,7 +265,7 @@ Because the built-in `models` lists now lead with the verified IDs, **the only s
 - Don't add a `tailwind.config.js` — Tailwind v4 here is configured purely via `@theme` in `global.css`.
 - Don't switch `ChatWidget` to `client:load` — it tanks LCP.
 - Don't hardcode model IDs in `src/lib/llm.ts` defaults; respect the env-override pattern.
-- Don't write to `.claude/` expecting it to be committed — that directory is gitignored.
+- Don't assume `.claude/` is gitignored — it isn't, and the design-system skill under it is tracked. Edits there land in commits, and they must be mirrored to `.agents/skills/` (see the twin rule).
 - Don't break the `portfolio-info.md` → chatbot pipeline by relocating that file without updating `src/lib/context.ts`.
 - Don't introduce a React component for something a `.astro` file can render. The island budget is intentionally small.
 - **Don't put project images in `public/`.** Files there bypass `astro:assets` entirely and ship as unoptimized originals with a `max-age=0, must-revalidate` cache header. `public/` is only for assets needing a stable un-hashed URL (`avatar.jpg`, `cv.pdf`). This was the single biggest performance bug the site has had — 42MB of raw PNGs.

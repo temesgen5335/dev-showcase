@@ -274,10 +274,9 @@ Trilingual marketing site for an Ethiopian supplier in Sebeta running three line
 
 ## Assets (for the site)
 
-- CV PDF: `public/cv.pdf` (source: `~/Documents/work/Temesgen_Gebreabzgi_Resume.pdf` — single-page LaTeX résumé, replaced the older Word-generated CV on 2026-08-26)
+- CV PDF: `public/cv.pdf`, served at **https://temesgen.dev/cv.pdf** — the one canonical CV link, always current with the latest deploy. Source document: `~/Documents/work/Temesgen_Gebreabzgi_Resume.pdf` (single-page LaTeX résumé; replaced the older Word-generated CV on 2026-08-26). Don't mirror the CV to a second host — a stale copy behind an old link is worse than no copy.
 - Profile photo: `public/avatar.jpg` (needs a stable un-hashed URL — it is the favicon and `og:image`)
 - Project screenshots: `src/assets/projects/*`, referenced from project MDX by relative path and optimized by `astro:assets`. They are **not** in `public/`.
-- CV hosted link (fallback): https://drive.google.com/file/d/1poYpGrmwtftwtR8gP8S69zJ-lTOiD7rA/view
 
 ---
 

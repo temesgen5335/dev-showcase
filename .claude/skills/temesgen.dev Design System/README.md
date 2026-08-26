@@ -12,7 +12,7 @@ This system was extracted from one codebase. None of these paths are accessible 
 - **Codebase:** `/Users/temesgeng/repos/temesgen-dev` (mounted as `temesgen-dev/` in the original session)
 - **Stack:** Astro 5.14 SSR · Tailwind v4 (via `@tailwindcss/vite`) · TypeScript strict · React 19 (only for `ChatWidget`)
 - **Primary tokens of truth:** [`reference/global.css`](reference/global.css)
-- **Brand voice / facts of truth:** [`reference/portfolio-info.md`](reference/portfolio-info.md) — also injected verbatim into the "ask my portfolio" chatbot's system prompt
+- **Brand voice / facts of truth:** `portfolio-info.md` **at the repository root** — the single canonical copy, and the one injected verbatim into the "ask my portfolio" chatbot's system prompt. [`reference/portfolio-info.md`](reference/portfolio-info.md) is only a pointer to it.
 - **Hero brief (taste anchor):** [`reference/HERO_PROMPT.md`](reference/HERO_PROMPT.md) — articulates the aesthetic better than any moodboard
 
 ## Product surfaces
@@ -175,7 +175,7 @@ The system uses a small, consistent radius scale; values match what's used in th
 | `assets/avatar.jpg` | profile photo (used for favicon + OG only) |
 | `assets/projects/*` | project screenshots (Chronos, SolveIT, Hook Lab) |
 | `reference/global.css` | the original Tailwind v4 `@theme` + `@layer` from the codebase |
-| `reference/portfolio-info.md` | brand voice + facts of truth |
+| `reference/portfolio-info.md` | pointer to the root `portfolio-info.md` (brand voice + facts of truth) |
 | `reference/HERO_PROMPT.md` | the aesthetic brief that defines the system's taste |
 | `preview/*.html` | small spec cards rendered in the Design System tab |
 | `ui_kits/portfolio/` | high-fidelity recreation of the portfolio site |
