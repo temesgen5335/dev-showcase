@@ -1,4 +1,21 @@
 import { useEffect, useRef, useState } from "react";
+import { classifySmalltalk } from "@/lib/smalltalk";
+
+/**
+ * Visually hidden but announced. Bubbles are positioned by `alignSelf`, which conveys "who said
+ * this" to sighted visitors and to nobody else, so each turn carries a spoken speaker label.
+ */
+const SR_ONLY = {
+  position: "absolute",
+  width: "1px",
+  height: "1px",
+  padding: 0,
+  margin: "-1px",
+  overflow: "hidden",
+  clip: "rect(0,0,0,0)",
+  whiteSpace: "nowrap",
+  border: 0,
+} as const;
 
 // `error: true` marks a UI-only failure bubble (⚠️ …). It renders like an assistant turn but
 // is never sent to the API or persisted — it isn't part of the conversation, and feeding it
@@ -109,6 +126,8 @@ export default function ChatWidget() {
   const scrollerRef = useRef<HTMLDivElement>(null);
   const abortRef = useRef<AbortController | null>(null);
   const loadedRef = useRef(false);
+  const inputRef = useRef<HTMLInputElement>(null);
+  const launcherRef = useRef<HTMLButtonElement>(null);
 
   // Hydrate from localStorage after mount. SSR renders the greeting; the stored
   // history (if any, and not expired) appears on the first client effect.
@@ -132,6 +151,25 @@ export default function ChatWidget() {
     });
   }, [messages, open]);
 
+  // Opening the panel puts the caret in the input — the panel exists to be typed into, and
+  // otherwise the visitor's next keystroke goes nowhere.
+  useEffect(() => {
+    if (open) inputRef.current?.focus();
+  }, [open]);
+
+  // Escape closes and returns focus to the launcher, which is where it came from. Bound to the
+  // document rather than the panel because focus can legitimately sit on the launcher itself.
+  useEffect(() => {
+    if (!open) return;
+    function onKey(e: KeyboardEvent) {
+      if (e.key !== "Escape") return;
+      setOpen(false);
+      launcherRef.current?.focus();
+    }
+    document.addEventListener("keydown", onKey);
+    return () => document.removeEventListener("keydown", onKey);
+  }, [open]);
+
   function clearHistory() {
     setMessages([GREETING]);
     if (typeof window !== "undefined") {
@@ -141,6 +179,23 @@ export default function ChatWidget() {
         /* ignore */
       }
     }
+  }
+
+  /**
+   * Abandon the in-flight reply.
+   *
+   * `abortRef` has always been populated and never used — there was no way to stop a stream, so a
+   * long or wrong answer had to be waited out. The AbortError path in `send()` already ignores the
+   * throw; this just gives it a trigger, and drops the placeholder if nothing had arrived yet so
+   * the transcript doesn't keep an empty bubble.
+   */
+  function stop() {
+    abortRef.current?.abort();
+    setMessages((prev) => {
+      const last = prev[prev.length - 1];
+      if (last && last.role === "assistant" && !last.content.trim()) return prev.slice(0, -1);
+      return prev;
+    });
   }
 
   async function send(text: string) {
@@ -215,12 +270,24 @@ export default function ChatWidget() {
     }
   }
 
+  // Starter chips are shown before the first question and again after a purely conversational
+  // turn. Saying "hi" or "thanks" leaves the visitor exactly where they started — needing
+  // something to ask — so that is precisely when the menu should come back, rather than only ever
+  // on the untouched panel. Uses the same classifier the API route uses, so the two agree.
+  const turns = conversational(messages);
+  const lastUser = turns.filter((m) => m.role === "user").at(-1);
+  const showSuggestions =
+    !streaming && (turns.length <= 1 || (!!lastUser && classifySmalltalk(lastUser.content) !== null));
+
   return (
     <>
       <button
+        ref={launcherRef}
         type="button"
         onClick={() => setOpen((v) => !v)}
         aria-label={open ? "Close chat" : "Ask my portfolio"}
+        aria-expanded={open}
+        aria-controls="portfolio-chat-panel"
         style={{
           position: "fixed",
           right: "1.25rem",
@@ -240,6 +307,9 @@ export default function ChatWidget() {
       </button>
       {open && (
         <div
+          id="portfolio-chat-panel"
+          role="dialog"
+          aria-label="Ask my portfolio"
           style={{
             position: "fixed",
             right: "1.25rem",
@@ -300,6 +370,12 @@ export default function ChatWidget() {
           </div>
           <div
             ref={scrollerRef}
+            role="log"
+            aria-label="Conversation"
+            aria-live="polite"
+            // Suppresses announcement while tokens are still arriving, so a screen reader reads
+            // the finished reply once instead of interrupting itself on every delta.
+            aria-busy={streaming}
             style={{
               flex: 1,
               overflowY: "auto",
@@ -325,11 +401,16 @@ export default function ChatWidget() {
                   whiteSpace: "pre-wrap",
                 }}
               >
+                <span style={SR_ONLY}>{m.role === "user" ? "You said: " : "Assistant said: "}</span>
                 {m.content || (streaming && i === messages.length - 1 ? "…" : "")}
               </div>
             ))}
-            {messages.length === 1 && (
-              <div style={{ display: "flex", flexWrap: "wrap", gap: "0.4rem", marginTop: "0.25rem" }}>
+            {showSuggestions && (
+              <div
+                role="group"
+                aria-label="Suggested questions"
+                style={{ display: "flex", flexWrap: "wrap", gap: "0.4rem", marginTop: "0.25rem" }}
+              >
                 {SUGGESTIONS.map((s) => (
                   <button
                     key={s}
@@ -365,8 +446,10 @@ export default function ChatWidget() {
             }}
           >
             <input
+              ref={inputRef}
               value={input}
               onChange={(e) => setInput(e.target.value)}
+              aria-label="Ask a question about Temesgen"
               placeholder="ask anything about temesgen…"
               style={{
                 flex: 1,
@@ -380,21 +463,23 @@ export default function ChatWidget() {
               }}
             />
             <button
-              type="submit"
-              disabled={streaming || !input.trim()}
+              type={streaming ? "button" : "submit"}
+              onClick={streaming ? stop : undefined}
+              disabled={!streaming && !input.trim()}
+              aria-label={streaming ? "Stop generating" : "Send message"}
               style={{
                 fontFamily: "var(--font-mono)",
                 fontSize: "0.8rem",
                 padding: "0 0.9rem",
                 borderRadius: "0.35rem",
                 border: "1px solid var(--color-border)",
-                background: "var(--color-text-strong)",
-                color: "#000",
-                cursor: streaming ? "not-allowed" : "pointer",
-                opacity: streaming || !input.trim() ? 0.6 : 1,
+                background: streaming ? "transparent" : "var(--color-text-strong)",
+                color: streaming ? "var(--color-text)" : "#000",
+                cursor: "pointer",
+                opacity: !streaming && !input.trim() ? 0.6 : 1,
               }}
             >
-              {streaming ? "…" : "send"}
+              {streaming ? "stop" : "send"}
             </button>
           </form>
         </div>

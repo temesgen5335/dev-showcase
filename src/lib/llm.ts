@@ -37,8 +37,12 @@ const PROVIDERS = [
     name: "groq" as const,
     keyEnv: "GROQ_API_KEY",
     modelEnv: "GROQ_MODEL",
-    // gpt-oss-20b/120b verified against this key; qwen is listed but unexercised.
-    models: ["openai/gpt-oss-20b", "openai/gpt-oss-120b", "qwen/qwen3.6-27b"],
+    // gpt-oss-20b/120b verified end-to-end against this key.
+    // qwen/qwen3.6-27b was here and is deliberately gone: measured 2026-09-03 via npm run eval,
+    // it streams a single "\n" and nothing else — reasoning goes to the reasoning channel and the
+    // text channel stays empty. It is not a retired ID that 404s cleanly; it answers 200 with
+    // nothing, which is strictly worse. Kept out rather than left to burn a round trip.
+    models: ["openai/gpt-oss-20b", "openai/gpt-oss-120b"],
   },
   {
     name: "gemini" as const,
@@ -246,31 +250,56 @@ export async function chatStream({
       const committed = result.fullStream.getReader();
       reader = committed;
 
-      // Only commit to this provider once it has produced real text.
-      let firstText: string | undefined;
-      while (firstText === undefined) {
+      // Only commit to this provider once it has produced text a *visitor* would see: at least
+      // one non-whitespace character that survives reasoning-stripping.
+      //
+      // Gating on raw deltas is not enough, and the difference is not theoretical. The bar was
+      // "any truthy delta", which two separate failure modes clear without saying anything:
+      //
+      //   - a lone "\n". Whitespace is not an answer.
+      //   - a "<think>" opener. qwen3.6-27b on Groq writes its reasoning into the *text* channel,
+      //     so the gate saw "<", committed, and the stripper then removed the entire block —
+      //     leaving the visitor a blank bubble while a healthy provider sat next in line,
+      //     unreached. Measured 2026-09-03; the old comment here even flagged the gap ("health
+      //     check used the raw first text; visitors only ever see stripped output") without
+      //     closing it.
+      //
+      // So the stripper is created *before* the gate and fed by it, and `opening` holds already
+      // stripped output. Cost: a model that front-loads a long reasoning block is buffered until
+      // it says something real. That's the right trade — latency on a bad model, instead of an
+      // empty answer on a good provider.
+      const strip = createReasoningStripper();
+      let opening = "";
+      let rawSeen = 0;
+      while (true) {
         const { done, value } = await committed.read();
         if (done) break;
         if (value.type === "error") throw value.error;
-        if (value.type === "text-delta" && value.text) firstText = value.text;
+        if (value.type === "text-delta" && value.text) {
+          rawSeen += value.text.length;
+          opening += strip.push(value.text);
+          if (opening.trim().length > 0) break;
+        }
       }
-      if (firstText === undefined) {
-        throw new Error("stream produced no text");
+      if (opening.trim().length === 0) {
+        // Distinguish the two for the failover log: "said nothing at all" and "said only
+        // reasoning" point at different problems with the model.
+        throw new Error(
+          rawSeen > 0
+            ? `produced ${rawSeen} chars, none of it visitor-facing (all reasoning)`
+            : "stream produced no text",
+        );
       }
-
-      const opening = firstText;
       const encoder = new TextEncoder();
-      // Health check above used the raw first text; visitors only ever see stripped output.
-      const strip = createReasoningStripper();
       const stream = new ReadableStream<Uint8Array>({
         async start(controller) {
           try {
-            let rawChars = opening.length;
+            let rawChars = rawSeen;
             let sentChars = 0;
-            const head = strip.push(opening);
-            if (head) {
-              sentChars += head.length;
-              controller.enqueue(encoder.encode(head));
+            // `opening` came through the stripper already — enqueue it, don't re-push it.
+            {
+              sentChars += opening.length;
+              controller.enqueue(encoder.encode(opening));
             }
             while (true) {
               const { done, value } = await committed.read();

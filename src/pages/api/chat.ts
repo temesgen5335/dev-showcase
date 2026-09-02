@@ -6,6 +6,7 @@ import {
   PROVIDER_UNAVAILABLE_MESSAGE,
 } from "@/lib/llm";
 import { buildSystemPrompt } from "@/lib/context";
+import { smalltalkResponse } from "@/lib/smalltalk";
 
 export const prerender = false;
 
@@ -103,6 +104,25 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
     // sentence — it used to echo raw Zod JSON at the visitor. Detail stays in the server log.
     console.warn("[api/chat] rejected body", JSON.stringify(parsed.error.flatten()));
     return new Response("That message couldn't be sent. Please try again.", { status: 400 });
+  }
+
+  // Conversational glue ("hi", "thanks", "what can you do?") is answered from a table before the
+  // model is involved. The prompt handles the long tail, but the head is worth deciding
+  // deterministically: it's the most common opening message there is, prompt-side politeness is
+  // sampled and can regress on a model swap, and a greeting costs no tokens and no cold start.
+  // Matching is exact and whole-message, so a real question never lands here — see lib/smalltalk.ts.
+  const canned = smalltalkResponse(parsed.data.messages);
+  if (canned) {
+    return new Response(canned.text, {
+      headers: {
+        "content-type": "text/plain; charset=utf-8",
+        "cache-control": "no-store",
+        // Same header shape as the model path so the widget and any log reader can treat the two
+        // uniformly; `rule` is what distinguishes them.
+        "x-llm-provider": "rule",
+        "x-llm-model": `smalltalk:${canned.kind}`,
+      },
+    });
   }
 
   try {

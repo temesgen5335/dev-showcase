@@ -10,7 +10,8 @@
     "preview": "astro preview",
     "astro": "astro",
     "check": "astro check",
-    "test": "node --experimental-strip-types --no-warnings tests/reasoning-stripper.test.mts"
+    "test": "for f in tests/*.test.mts; do node --experimental-strip-types --no-warnings \"$f\" || exit 1; done",
+    "eval": "node --experimental-strip-types --no-warnings evals/chat-behavior.eval.mts"
   },
   "dependencies": {
     "@ai-sdk/anthropic": "^3.0.71",
