@@ -36,6 +36,14 @@ function conversational(messages: Msg[]): Msg[] {
   return messages.filter((m) => !m.error && m.content.trim().length > 0);
 }
 
+// Mirror the server's transcript caps (see BodySchema in api/chat.ts). The endpoint is stateless
+// — the browser resends the whole history every turn — so once a chat grows past either cap, an
+// untrimmed body 400s ("Array must contain at most 20 element(s)") on *every* send, permanently,
+// until the visitor hits `clear`. A portfolio Q&A doesn't need deep history, so we send a sliding
+// window of the most recent turns: context stays useful and the request stays valid.
+const MAX_WIRE_MESSAGES = 20;
+const MAX_WIRE_CHARS = 12_000;
+
 /**
  * The exact array sent to /api/chat.
  *
@@ -43,14 +51,24 @@ function conversational(messages: Msg[]): Msg[] {
  * hands an attacker a pre-filled assistant slot to build on, and would 400 on Anthropic, which
  * requires the first message to be `user`. The server enforces first-and-last-are-user, so this
  * is the client half of that contract.
+ *
+ * It also windows the history to the server's caps so a long conversation can't wedge itself.
+ * The final user turn (the message being answered) is always kept; older turns are dropped from
+ * the front until the body fits both the count and char limits.
  */
 function wireMessages(messages: Msg[]): { role: Msg["role"]; content: string }[] {
   const turns = conversational(messages);
   const firstUser = turns.findIndex((m) => m.role === "user");
-  return (firstUser === -1 ? [] : turns.slice(firstUser)).map((m) => ({
-    role: m.role,
-    content: m.content,
-  }));
+  let win = firstUser === -1 ? [] : turns.slice(firstUser);
+  const fits = (ms: Msg[]) =>
+    ms.length <= MAX_WIRE_MESSAGES &&
+    ms.reduce((n, m) => n + m.content.length, 0) <= MAX_WIRE_CHARS;
+  // Drop the oldest turn until the window fits; keep at least the message being answered.
+  while (win.length > 1 && !fits(win)) win = win.slice(1);
+  // A window that now starts on an assistant turn would fail the server's first-turn-is-user rule
+  // (and Anthropic's). Removing one leading item can't create consecutive assistant turns.
+  if (win[0]?.role === "assistant") win = win.slice(1);
+  return win.map((m) => ({ role: m.role, content: m.content }));
 }
 
 const GREETING: Msg = {
