@@ -88,6 +88,7 @@ temesgen.dev/
     │   ├── Footer.astro
     │   ├── ProjectCard.astro     ← used on home + /projects
     │   ├── Gallery.astro         ← thumbnail grid + fullscreen <dialog> lightbox
+    │   ├── CvButton.astro        ← segmented CV control: download link + eye-icon preview modal
     │   ├── ExperienceTimeline.astro  ← regex-bolds numbers in bullets
     │   ├── SkillsGrid.astro
     │   ├── Services.astro
@@ -140,6 +141,17 @@ Used by `src/pages/projects/[...slug].astro` for the `// gallery` block. Props: 
 - Body scroll is locked on open and restored in the single `close` handler, which also restores focus to the thumbnail that opened it. Neighbouring images are preloaded on `show()`.
 - **Don't put `display: none` in an inline `style` on elements whose visibility the `.js` gate controls** — inline styles outrank the scoped stylesheet and the gate silently stops working.
 - The project detail page falls back to `[cover]` when `gallery` is empty, so cover-only projects still get a preview: `const shots = d.gallery.length > 0 ? d.gallery : d.cover ? [d.cover] : [];`
+
+#### `CvButton.astro` (CV download + preview)
+
+The single CV call-to-action, used on the hero, `ContactCTA`, and the experience-page header. **It replaced three bare `<a href={site.cvPath} download>` links** — don't reintroduce those; render `<CvButton />` instead so download and preview stay together. Props: `label?` (default `"download cv"`) and `variant?: "btn" | "btn-primary"` (default `"btn"`) — match whatever the button it stands in for used.
+
+- **It is one segmented control, not two buttons.** The main segment is the same download link as before (`download` attr kept), so the download CTA is unchanged. The trailing eye segment opens an in-page preview modal. The two `.btn`s are joined by flattening the inner corners and collapsing the shared border with `margin-left: -1px`; the hovered segment gets `z-index: 1` so its highlighted border paints over the seam. This is why they're styled via the component's own `.cv-download`/`.cv-eye` classes, not by touching `.btn`.
+- **Progressive enhancement, same contract as `Gallery.astro`.** The eye is a real `<a href={cvPath} target="_blank">`, so with JS off (or no native `<dialog>`) it just opens the PDF in a new tab — itself a preview. The script upgrades the click into a native `<dialog>` modal (free ESC + focus-trap + `::backdrop`) and adds `.js` to the root. Modifier/middle clicks are let through to the real href.
+- **The `<iframe>` src is lazy.** It carries `data-src`, not `src`, and the script assigns `src` on first open. Several instances on one page (e.g. the experience page has two) therefore cost nothing at load — the PDF is fetched only when someone actually opens a preview. Don't add an eager `src`.
+- One shared `<script>` (Astro dedupes it) wires every instance via `document.querySelectorAll("[data-cv]")`. The root is `display: contents`, so the `.cv-cta` control drops into the parent's flex/inline flow unchanged and the closed (`display:none`) dialog costs no layout.
+- Body scroll is locked on open and restored in the `close` handler, which also returns focus to the eye that opened it. The modal offers *open in new tab* and *download* alongside the embedded viewer — these double as the fallback where a browser (notably iOS Safari) renders an iframed PDF poorly.
+- `cv.pdf` stays in `public/` (stable, un-hashed URL) — the iframe and both links point straight at `site.cvPath`.
 
 ### Styles & design tokens
 

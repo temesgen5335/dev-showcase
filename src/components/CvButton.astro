@@ -1,0 +1,250 @@
+---
+/**
+ * The CV call-to-action: one segmented control that does both jobs.
+ *
+ * - The main segment is the plain download link it has always been (`download` attr kept), so the
+ *   download CTA is unchanged and still the thing a recruiter reaches for.
+ * - The trailing eye segment opens an in-page preview modal (a native <dialog> lightbox embedding
+ *   the PDF), so a visitor can read the CV without committing to a download — with Download and
+ *   Open-in-new-tab available inside the modal too.
+ *
+ * Progressive enhancement, same contract as Gallery.astro: the eye is a real
+ * `<a href={cvPath} target="_blank">`, so with JS off it just opens the PDF in a new tab (itself a
+ * preview). The script upgrades that click into the modal and adds a `.js` class to gate the
+ * JS-only affordances. The <iframe> src is set lazily on first open, so placing several of these on
+ * one page doesn't fetch the PDF once per instance at load.
+ */
+import { site } from "@/data/site";
+
+interface Props {
+  /** Text of the download segment. */
+  label?: string;
+  /** Which `.btn` variant to render — matches the button it replaces. */
+  variant?: "btn" | "btn-primary";
+}
+
+const { label = "download cv", variant = "btn" } = Astro.props;
+const cvPath = site.cvPath;
+---
+
+<span class="cv-cta-root" data-cv>
+  <span class="cv-cta">
+    <a href={cvPath} class={`${variant} cv-download`} download>{label}</a>
+    <a
+      href={cvPath}
+      class={`${variant} cv-eye`}
+      data-cv-preview
+      target="_blank"
+      rel="noopener"
+      aria-label="Preview CV without downloading"
+      title="Preview CV"
+    >
+      <svg
+        width="16"
+        height="16"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="1.8"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        aria-hidden="true"
+      >
+        <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7Z" />
+        <circle cx="12" cy="12" r="3" />
+      </svg>
+    </a>
+  </span>
+
+  <dialog data-cv-dialog class="cv-modal" aria-label="CV preview">
+    <div class="cv-modal-bar">
+      <span class="mono cv-modal-title">// cv preview</span>
+      <div class="cv-modal-actions">
+        <a class="mono cv-modal-link" href={cvPath} target="_blank" rel="noopener">open in new tab ↗</a>
+        <a class="mono cv-modal-link" href={cvPath} download>download ↓</a>
+        <button type="button" class="mono cv-modal-close" data-cv-close aria-label="Close preview">✕</button>
+      </div>
+    </div>
+    <div class="cv-modal-body">
+      <iframe class="cv-frame" data-cv-frame data-src={cvPath} title="CV preview"></iframe>
+    </div>
+  </dialog>
+</span>
+
+<style>
+  /* The wrapper generates no box of its own, so the `.cv-cta` control drops straight into whatever
+     flex/inline flow the button sat in before, and the (closed, display:none) <dialog> costs no
+     layout. */
+  .cv-cta-root {
+    display: contents;
+  }
+
+  .cv-cta {
+    display: inline-flex;
+  }
+
+  /* Join the two segments into one control: flatten the inner corners and collapse the shared
+     border with a -1px margin so the seam is a single hairline, not a double one. */
+  .cv-download {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+  }
+  .cv-eye {
+    margin-left: -1px;
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+    padding-inline: 0.7rem;
+  }
+  /* The hovered segment paints its (highlighted) border over the seam. */
+  .cv-cta > .cv-download:hover,
+  .cv-cta > .cv-eye:hover,
+  .cv-cta > .cv-eye:focus-visible {
+    position: relative;
+    z-index: 1;
+  }
+  .cv-eye svg {
+    display: block;
+  }
+
+  .cv-modal {
+    width: min(1000px, 94vw);
+    height: min(88vh, 860px);
+    max-width: 94vw;
+    max-height: 90vh;
+    padding: 0;
+    border: 1px solid var(--color-border);
+    border-radius: 0.6rem;
+    background: var(--color-surface);
+    color: var(--color-text);
+    overflow: hidden;
+    box-shadow: 0 24px 70px rgba(0, 0, 0, 0.6);
+  }
+  .cv-modal[open] {
+    display: flex;
+    flex-direction: column;
+  }
+  .cv-modal::backdrop {
+    background: rgba(0, 0, 0, 0.66);
+    backdrop-filter: blur(2px);
+  }
+
+  .cv-modal-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    padding: 0.6rem 0.85rem;
+    border-bottom: 1px solid var(--color-border);
+    flex: 0 0 auto;
+  }
+  .cv-modal-title {
+    color: var(--color-muted);
+    font-size: 0.78rem;
+  }
+  .cv-modal-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+  }
+  .cv-modal-link {
+    color: var(--color-text);
+    font-size: 0.76rem;
+  }
+  .cv-modal-link:hover {
+    color: var(--color-accent);
+  }
+  .cv-modal-close {
+    border: 1px solid var(--color-border);
+    border-radius: 0.3rem;
+    background: transparent;
+    color: var(--color-muted);
+    font-size: 0.8rem;
+    line-height: 1;
+    padding: 0.28rem 0.5rem;
+    cursor: pointer;
+  }
+  .cv-modal-close:hover {
+    border-color: var(--color-border-hover);
+    color: var(--color-text-strong);
+  }
+
+  .cv-modal-body {
+    flex: 1 1 auto;
+    min-height: 0;
+    background: #fff;
+  }
+  .cv-frame {
+    width: 100%;
+    height: 100%;
+    border: 0;
+    display: block;
+  }
+
+  /* Gentle entrance; skipped for reduced-motion. */
+  @media (prefers-reduced-motion: no-preference) {
+    .cv-modal[open] {
+      animation: cv-modal-in 160ms ease-out;
+    }
+    @keyframes cv-modal-in {
+      from {
+        opacity: 0;
+        transform: translateY(6px) scale(0.99);
+      }
+      to {
+        opacity: 1;
+        transform: none;
+      }
+    }
+  }
+</style>
+
+<script>
+  // Client island; the control renders and works without any of this (the eye is a plain link to
+  // the PDF). Astro hoists and dedupes this block, so one copy wires every instance on the page.
+  (() => {
+    const roots = document.querySelectorAll<HTMLElement>("[data-cv]");
+    if (!roots.length) return;
+
+    for (const root of roots) {
+      const eye = root.querySelector<HTMLAnchorElement>("[data-cv-preview]");
+      const dialog = root.querySelector<HTMLDialogElement>("[data-cv-dialog]");
+      const frame = root.querySelector<HTMLIFrameElement>("[data-cv-frame]");
+      const closeBtn = root.querySelector<HTMLButtonElement>("[data-cv-close]");
+      // Native <dialog> support is what buys us free focus-trap + ESC; without it, leave the eye as
+      // the plain new-tab link it already is.
+      if (!eye || !dialog || !frame || typeof dialog.showModal !== "function") continue;
+
+      root.classList.add("js");
+      let opener: HTMLElement | null = null;
+
+      const open = () => {
+        // Lazy: fetch the PDF only when someone actually asks to see it.
+        if (!frame.src && frame.dataset.src) frame.src = frame.dataset.src;
+        opener = eye;
+        dialog.showModal();
+        document.body.style.overflow = "hidden";
+        closeBtn?.focus();
+      };
+
+      eye.addEventListener("click", (e) => {
+        // Let modifier/middle clicks fall through to the real href (open PDF in a new tab).
+        if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || (e as MouseEvent).button !== 0) return;
+        e.preventDefault();
+        open();
+      });
+
+      // Click on the backdrop (the dialog's own box, outside the content) closes it.
+      dialog.addEventListener("click", (e) => {
+        if (e.target === dialog) dialog.close();
+      });
+
+      closeBtn?.addEventListener("click", () => dialog.close());
+
+      dialog.addEventListener("close", () => {
+        document.body.style.overflow = "";
+        opener?.focus();
+        opener = null;
+      });
+    }
+  })();
+</script>

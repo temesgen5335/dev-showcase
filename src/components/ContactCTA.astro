@@ -1,5 +1,6 @@
 ---
 import { site } from "@/data/site";
+import CvButton from "@/components/CvButton.astro";
 ---
 <section class="card" style="padding: 2rem 2rem; margin-top: 3rem;">
   <h2 style="margin: 0 0 0.5rem; font-size: 1.4rem;">Let's build something.</h2>
@@ -9,6 +10,6 @@ import { site } from "@/data/site";
   <div style="display: flex; flex-wrap: wrap; gap: 0.5rem;">
     <a class="btn btn-primary" href={`mailto:${site.email}`}>email {site.email}</a>
     <a class="btn" href="/contact">contact form</a>
-    <a class="btn" href={site.cvPath} download>download cv</a>
+    <CvButton />
   </div>
 </section>

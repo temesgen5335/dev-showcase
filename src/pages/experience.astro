@@ -2,6 +2,7 @@
 import Base from "@/layouts/Base.astro";
 import ExperienceTimeline from "@/components/ExperienceTimeline.astro";
 import ContactCTA from "@/components/ContactCTA.astro";
+import CvButton from "@/components/CvButton.astro";
 import { site } from "@/data/site";
 ---
 <Base title="Experience" description={`Work history and impact for ${site.name}.`}>
@@ -13,7 +14,7 @@ import { site } from "@/data/site";
       to a San Francisco fintech. Impact numbers are in bold.
     </p>
     <div style="margin-top: 1rem; display: flex; gap: 0.5rem; flex-wrap: wrap;">
-      <a class="btn btn-primary" href={site.cvPath} download>download full cv</a>
+      <CvButton label="download full cv" variant="btn-primary" />
     </div>
   </header>
   <ExperienceTimeline />

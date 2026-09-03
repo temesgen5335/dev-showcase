@@ -1,5 +1,6 @@
 ---
 import { site } from "@/data/site";
+import CvButton from "@/components/CvButton.astro";
 ---
 <section
   data-hero
@@ -90,7 +91,7 @@ import { site } from "@/data/site";
 
     <div data-hero-ctas style="display: flex; gap: 0.6rem; flex-wrap: wrap;">
       <a href="/experience" class="btn btn-primary">view experience →</a>
-      <a href={site.cvPath} class="btn" download>download cv</a>
+      <CvButton />
       <a href="/contact" class="btn">get in touch</a>
     </div>
 
