@@ -275,7 +275,7 @@ export function smalltalkReply(
       // the concrete examples.
       return firstTurn
         ? "Hi! What would you like to know — his experience, a particular project, his tech stack, or whether he's available for work?"
-        : "Sure — what would you like to know about his work?";
+        : "Hi again! What would you like to know about his work today?";
     case "thanks":
       return "Anytime. If anything else about Temesgen's work comes to mind, just ask.";
     case "farewell":
@@ -283,7 +283,7 @@ export function smalltalkReply(
     case "ack":
       return "Anything else you'd like to know about his experience or projects?";
     case "capabilities":
-      return `I'm the assistant on Temesgen Gebreabzgi's portfolio, and I answer from his CV — his roles and experience, what individual projects do, his tech stack, education and certifications, where he's based, and how to get in touch. Ask away; for anything his CV doesn't cover, email ${CONTACT_EMAIL}.`;
+      return `I'm the assistant on Temesgen Gebreabzgi's portfolio, and I answer from his CV, his roles and experience, what individual projects do, his tech stack, education and certifications, where he's based, and how to get in touch. Ask away; for anything his CV doesn't cover, email ${CONTACT_EMAIL}.`;
   }
 }
 
